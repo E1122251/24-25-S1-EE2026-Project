@@ -37,7 +37,8 @@ module led_D_gen(
     assign led_D[4] = clock_9hz;
     assign led_D[7] = clock_9hz;
     assign led_D[8] = clock_9hz;
-    assign led_D[15] = clock_9hz;
+    
+    assign led_D[15] = 1'b1;
     
     assign led_D[1] = 1'b0;
     assign led_D[3] = 1'b0;

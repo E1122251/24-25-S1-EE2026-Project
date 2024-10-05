@@ -48,6 +48,16 @@ module oled_data_D_sq_g_pos(
     
     reg [2:0] sq_g_dir = 3'd0;
     
+    // define localparam U D L R begin
+    
+    localparam NULL = 3'd0;
+    localparam UP = 3'd1;
+    localparam RIGHT = 3'd2;
+    localparam DOWN = 3'd3;
+    localparam LEFT = 3'd4;
+    
+    // define localparam U D L R end
+    
     // sq_g_contact begin
     
     wire sq_g_contact_U; wire sq_g_contact_R; wire sq_g_contact_D; wire sq_g_contact_L;
@@ -74,35 +84,35 @@ module oled_data_D_sq_g_pos(
         
         if ( password_D ) begin
             
-            if ( btn == 5'b01000 ) begin
-                
-                sq_g_dir <= 3'd1;
-                
-            end else if ( btn == 5'b00100 ) begin
-                
-                sq_g_dir <= 3'd2;
-                
-            end else if ( btn == 5'b00010 ) begin
-                
-                sq_g_dir <= 3'd3;
-                
-            end else if ( btn == 5'b00001 ) begin
-                
-                sq_g_dir <= 3'd4;
-                
-            end else if ( btn == 5'b00000 ) begin
+            if ( btn == 5'b00000 ) begin
                 
                 sq_g_dir <= sq_g_dir;
                 
+            end else if ( btn == 5'b01000 ) begin
+                
+                sq_g_dir <= UP;
+                
+            end else if ( btn == 5'b00100 ) begin
+                
+                sq_g_dir <= RIGHT;
+                
+            end else if ( btn == 5'b00010 ) begin
+                
+                sq_g_dir <= DOWN;
+                
+            end else if ( btn == 5'b00001 ) begin
+                
+                sq_g_dir <= LEFT;
+                
             end else begin
                 
-                sq_g_dir <= 3'd0;
+                sq_g_dir <= NULL;
                 
             end
             
         end else begin
             
-            sq_g_dir <= 3'd0;
+            sq_g_dir <= NULL;
             
         end
         
@@ -116,11 +126,11 @@ module oled_data_D_sq_g_pos(
         
         if ( password_D ) begin
         
-            if ( sq_g_dir == 3'd0 ) begin
+            if ( sq_g_dir == NULL ) begin
                 
                 sq_g_moving <= 0;
                 
-            end else if ( sq_g_dir == 3'd1 ) begin
+            end else if ( sq_g_dir == UP ) begin
                 
                 if ( sq_g_contact_U == 1 ) begin
                     
@@ -134,7 +144,7 @@ module oled_data_D_sq_g_pos(
                     
                 end
                 
-            end else if ( sq_g_dir == 3'd2 ) begin
+            end else if ( sq_g_dir == RIGHT ) begin
                 
                 if ( sq_g_contact_R == 1 ) begin
                 
@@ -148,7 +158,7 @@ module oled_data_D_sq_g_pos(
                 
                 end
                             
-            end else if ( sq_g_dir == 3'd3 ) begin
+            end else if ( sq_g_dir == DOWN ) begin
                         
                 if ( sq_g_contact_D == 1 ) begin
                 
@@ -162,7 +172,7 @@ module oled_data_D_sq_g_pos(
                 
                 end
                                     
-            end else if ( sq_g_dir == 3'd4 ) begin
+            end else if ( sq_g_dir == LEFT ) begin
                         
                 if ( sq_g_contact_L == 1 ) begin
             
