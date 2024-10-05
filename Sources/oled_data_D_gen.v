@@ -75,6 +75,9 @@ module oled_data_D_gen(
     .btnL(btnL),
     .btnR(btnR),
     .btnD(btnD),
+    
+    .led_x(led_x),
+    .led_y(led_y),
         
     .password_D(password_D),
     
