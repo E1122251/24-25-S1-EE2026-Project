@@ -6,7 +6,7 @@
 //  STUDENT A NAME: 
 //  STUDENT B NAME:
 //  STUDENT C NAME: 
-//  STUDENT D NAME:  
+//  STUDENT D NAME: Lam Zhe Yu Isaac
 //
 //////////////////////////////////////////////////////////////////////////////////
 
@@ -78,6 +78,22 @@ module Top_Student (
     assign JB[2] = 1'b0;
     
     // instantiate Oled_Display end
+    
+    // instantiate oled_data_init_gen begin
+    
+    wire [15:0] oled_data_init;
+    
+    oled_data_init_gen oled_data_init_gen_instance (
+        
+    .clock_100mhz(clock_100mhz),
+    
+    .pixel_index(pixel_index),
+    
+    .oled_data_init(oled_data_init)
+            
+    );
+    
+    // instantiate oled_data_init_gen end
     
     // instantiate student_A begin
     
@@ -160,7 +176,7 @@ module Top_Student (
             
             led <= sw;
             
-            oled_data <= 16'd0;
+            oled_data <= oled_data_init;
             
         end
         
