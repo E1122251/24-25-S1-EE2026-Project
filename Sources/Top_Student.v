@@ -4,7 +4,7 @@
 //
 //  FILL IN THE FOLLOWING INFORMATION:
 //  STUDENT A NAME: 
-//  STUDENT B NAME:
+//  STUDENT B NAME: Aryan Dubey
 //  STUDENT C NAME: 
 //  STUDENT D NAME: Lam Zhe Yu Isaac
 //
@@ -33,9 +33,9 @@ module Top_Student (
     wire password_D;
     
     // assign password_A = 
-    // assign password_B =
-    // assign password_C =
-    assign password_D = ( sw == 16'b1000000110010101 );
+    assign password_B = ( sw == 16'b0010_0010_0110_0101 );
+    // assign password_C = 
+    assign password_D = ( sw == 16'b1000_0001_1001_0101 );
     
     // define passwords end
     
@@ -106,6 +106,17 @@ module Top_Student (
     
     wire [15:0] led_B;
     wire [15:0] oled_data_B;
+    
+    student_B student_B_instance (
+             .clock_100mhz(clock_100mhz),
+             .btnC(btnC),
+             .btnU(btnU),
+             .btnD(btnD),
+             .password_B(password_B),
+             .pixel_index(pixel_index),
+             .led(led_B),
+             .oled_data(oled_data_B)
+         );
     
     // instantiate student_B end
     
