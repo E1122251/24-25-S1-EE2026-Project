@@ -26,6 +26,9 @@ module oled_data_D_sq_g_pos(
     
     input btnC, btnU, btnL, btnR, btnD,
     
+    input [6:0] led_x,
+    input [5:0] led_y,
+    
     input password_D,
     
     input [6:0] sq_big_left,
@@ -122,10 +125,34 @@ module oled_data_D_sq_g_pos(
     
     // always block to move sq_g begin
     
-    always @(posedge clock_20hz) begin
+    wire last_pixel;
+        
+    assign last_pixel = ( led_x == 7'd95 ) && ( led_y == 6'd63);
+    
+    reg refresh_20hz = 1'b0;
+    
+    always @(posedge clock_100mhz) begin
+        
+        if ( (clock_20hz ) && ( last_pixel ) ) begin
+            
+            refresh_20hz <= 1;
+            
+        end else if ( ( clock_20hz ) && ( !last_pixel ) ) begin
+            
+            refresh_20hz <= refresh_20hz;
+            
+        end else begin
+            
+            refresh_20hz <= 0;
+            
+        end
+        
+    end
+    
+    always @(posedge refresh_20hz) begin
         
         if ( password_D ) begin
-        
+            
             if ( sq_g_dir == NULL ) begin
                 
                 sq_g_moving <= 0;

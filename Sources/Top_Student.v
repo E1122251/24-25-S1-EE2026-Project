@@ -157,7 +157,7 @@ module Top_Student (
     
     // always block to assign led and oled_data begin
     
-    always @(posedge clock_6p25mhz) begin
+    always @(posedge clock_100mhz) begin
         
         if ( password_A ) begin
             
