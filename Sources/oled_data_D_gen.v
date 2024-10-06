@@ -68,33 +68,33 @@ module oled_data_D_gen(
     
     oled_data_D_sq_g_pos oled_data_D_sq_g_pos_instance (
     
-    .clock_100mhz(clock_100mhz),
-    
-    .btnC(btnC),
-    .btnU(btnU),
-    .btnL(btnL),
-    .btnR(btnR),
-    .btnD(btnD),
-    
-    .led_x(led_x),
-    .led_y(led_y),
+        .clock_100mhz(clock_100mhz),
         
-    .password_D(password_D),
-    
-    .sq_big_left(sq_big_left),
-    .sq_big_top(sq_big_top),
-    .sq_big_right(sq_big_right),
-    .sq_big_bot(sq_big_bot),
-    
-    .sq_g_left(sq_g_left),
-    .sq_g_top(sq_g_top),
-    
-    .sq_g_right(sq_g_right),
-    .sq_g_bot(sq_g_bot),
-    
-    .sq_g_moving(sq_g_moving)
-    
-    );
+        .btnC(btnC),
+        .btnU(btnU),
+        .btnL(btnL),
+        .btnR(btnR),
+        .btnD(btnD),
+        
+        .led_x(led_x),
+        .led_y(led_y),
+            
+        .password_D(password_D),
+        
+        .sq_big_left(sq_big_left),
+        .sq_big_top(sq_big_top),
+        .sq_big_right(sq_big_right),
+        .sq_big_bot(sq_big_bot),
+        
+        .sq_g_left(sq_g_left),
+        .sq_g_top(sq_g_top),
+        
+        .sq_g_right(sq_g_right),
+        .sq_g_bot(sq_g_bot),
+        
+        .sq_g_moving(sq_g_moving)
+        
+        );
     
     // instantiate oled_data_D_sq_g_pos end
     
@@ -106,22 +106,27 @@ module oled_data_D_gen(
     
     // colours begin
     
+    localparam GREEN = 16'd2016;
+    localparam ORANGE = 16'd64480;
+    localparam RED = 16'd63488;
+    localparam BLACK = 16'd0;
+    
     wire [15:0] sq_g_colour;
     reg [15:0] sq_big_colour;
     wire [15:0] black_colour;
     
-    assign sq_g_colour = 16'd2016;
-    assign black_colour = 16'd0;
+    assign sq_g_colour = GREEN;
+    assign black_colour = BLACK;
     
     always @(posedge clock_100mhz) begin
         
         if ( sq_g_moving ) begin
             
-            sq_big_colour <= 16'd65504;
+            sq_big_colour <= ORANGE;
             
         end else begin
             
-            sq_big_colour <= 16'd63488;
+            sq_big_colour <= RED;
             
         end
         

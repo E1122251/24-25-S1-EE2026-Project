@@ -56,22 +56,22 @@ module student_D(
     
     oled_data_D_gen oled_data_D_gen_instance (
     
-    .clock_100mhz(clock_100mhz),
-    
-    .btnC(btnC),
-    .btnU(btnU),
-    .btnL(btnL),
-    .btnR(btnR),
-    .btnD(btnD),
-    
-    .led_x(led_x),
-    .led_y(led_y),
-    
-    .password_D(password_D),
-    
-    .oled_data_D(oled_data_D)
-    
-    );
+        .clock_100mhz(clock_100mhz),
+        
+        .btnC(btnC),
+        .btnU(btnU),
+        .btnL(btnL),
+        .btnR(btnR),
+        .btnD(btnD),
+        
+        .led_x(led_x),
+        .led_y(led_y),
+        
+        .password_D(password_D),
+        
+        .oled_data_D(oled_data_D)
+        
+        );
     
     // instantiate oled_data_D_gen end
        
