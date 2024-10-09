@@ -177,7 +177,8 @@ module Top_Student (
         );
     
     // instantiate student_D end
-    
+
+    student_E student_E_instance ();
     
     // always block to assign led and oled_data begin
     
