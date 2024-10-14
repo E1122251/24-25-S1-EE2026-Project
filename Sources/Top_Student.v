@@ -21,6 +21,9 @@ module Top_Student (
     
     output reg [15:0] led,
     
+    output reg [7:0] seg,
+    output reg [3:0] an,
+    
     output wire [7:0] JB
     
     );
@@ -75,7 +78,11 @@ module Top_Student (
     
     // instantiate game begin
     
-    wire [15:0] led_game; 
+    wire [15:0] led_game;
+    
+    wire [7:0] seg_game;
+    wire [3:0] an_game;
+     
     wire [15:0] oled_data_game;
     
     game game_instance (
@@ -96,6 +103,9 @@ module Top_Student (
         
         .led_game(led_game),
         
+        .seg_game(seg_game),
+        .an_game(an_game),
+        
         .oled_data_game(oled_data_game)
         
         );
@@ -111,11 +121,17 @@ module Top_Student (
             
             led <= led_game;
             
+            seg <= seg_game;
+            an <= an_game;
+            
             oled_data <= oled_data_game;
             
         end else begin
             
             led <= sw;
+            
+            seg <= ~8'b0000_0000;
+            an <= ~4'b0000;
             
             oled_data <= 0;
             

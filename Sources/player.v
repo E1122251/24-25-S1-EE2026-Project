@@ -34,7 +34,9 @@ module player(
     
     output [15:0] led_player,
     
-    output reg [15:0] oled_data_player
+    output reg [15:0] oled_data_player,
+    
+    output is_player_hitbox
     
     );
     
@@ -95,8 +97,6 @@ module player(
     
     wire is_player_wheels;
     wire is_player_chassis;
-    
-    wire is_player_hitbox;
     
     player_hitbox player_hitbox_instance (
         
