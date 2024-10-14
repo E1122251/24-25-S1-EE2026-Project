@@ -93,8 +93,8 @@ module game(
     
     // control seg_game and an_game begin
     
-    assign seg_game = 8'b1111_1111;
-    assign an_game = 4'b1111;
+    assign seg_game = ~8'b1111_1111;
+    assign an_game = ~4'b1111;
     
     // control seg_game and an_game end
     
