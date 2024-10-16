@@ -23,6 +23,7 @@
         - collision_animation
 
 > Inter-module communication variables
+> - menu
 
 - menu
   
