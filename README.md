@@ -24,8 +24,6 @@
 
 > Inter-module communication variables
 > - menu
-
-- menu
   
   - inputs
   
@@ -67,3 +65,5 @@
 
   - outputs
     - game_pause
+
+
