@@ -124,11 +124,11 @@ module player(
         
         if ( is_player_wheels ) begin
             
-            oled_data_player <= 2016;
+            oled_data_player <= 16'd2016;
             
         end else if ( is_player_chassis ) begin
             
-            oled_data_player <= 63488;
+            oled_data_player <= 16'd31;
             
         end else begin
             
