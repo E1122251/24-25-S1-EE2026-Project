@@ -18,3 +18,6 @@ Top_Student
     >stage
 
     >logic
+      >score_display
+      >is_collision
+        >collision_animation
