@@ -66,4 +66,33 @@
 >  - outputs
 >    - game_pause
 
-
+> Shared modules documentation
+>
+> - clock_variable_gen
+>    - inputs
+>      - clock_100mhz
+>      - m
+>        - ( (100 X 10 ** 6) / 2 X clock_desired ) - 1
+>    - output
+>      - clock_output
+>
+> - debounce
+>   - inputs
+>     - clock_100mhz
+>     - signal
+>   - outputs
+>     - signal_debounced
+>       - debounced for 50ms
+>
+> - vsync
+>   - inputs
+>     - clock_100mhz
+>     - [6:0] pixel_x
+>     - [5:0] pixel_y
+>     - clock
+>   - outputs
+>     - clock_vsync
+>   - Description
+>     - Synchronises input clock with pixel_index such that clock is delayed untill pixel_index is equal to the last pixel
+>     - Removes screen tearing for moving objects
+>     - Only works up to 30Hz, at which point will cause stuttering
