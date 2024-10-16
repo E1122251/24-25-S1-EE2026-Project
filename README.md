@@ -1,68 +1,68 @@
 # 24-25-S1-EE2026-Project
 
->Modules Structure
+> Modules Structure
 
 - Top_Student
 
-  -menu
+  - menu
 
-  -game
+  - game
 
-    -player
-      -player_hitbox
-      -player_pos
-        -player_move
-          -player_move_input
-          -player_speed
+    - player
+      - player_hitbox
+      - player_pos
+        - player_move
+          - player_move_input
+          - player_speed
     
-    -stage
+    - stage
 
-    -logic
-      -score_display
-      -is_collision
-        -collision_animation
+    - logic
+      - score_display
+      - is_collision
+        - collision_animation
 
->Inter-module communication variables
+> Inter-module communication variables
 
--menu
+- menu
   
-  -inputs
+  - inputs
   
-  -outputs
-    game_active
+  - outputs
+    - game_active
         
-    player_chassis_colour
-    player_wheels_colour
+    - player_chassis_colour
+    - player_wheels_colour
 
--game
+- game
 
-  -inputs
-    game_active
+  - inputs
+    - game_active
     
--player
+- player
 
-  -inputs
-    game_pause
+  - inputs
+    - game_pause
   
-    player_chassis_colour
-    player_wheels_colour
+    - player_chassis_colour
+    - player_wheels_colour
   
-  -outputs
-    is_player_hitbox
+  - outputs
+    - is_player_hitbox
 
--stage
+- stage
 
-  -inputs
-    game_pause
+  - inputs
+    - game_pause
 
-  -outputs
-    is_obstacle_hitbox
+  - outputs
+    - is_obstacle_hitbox
 
--logic
+- logic
 
-  -inputs
-    is_player_hitbox
-    is_obstacle_hitbox
+  - inputs
+    - is_player_hitbox
+    - is_obstacle_hitbox
 
-  -outputs
-    game_pause
+  - outputs
+    - game_pause
