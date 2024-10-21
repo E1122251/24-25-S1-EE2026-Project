@@ -95,8 +95,8 @@ module random_obstacles (
     end
 
     always @(*) begin
-        obstacle_data = 16'b00000_000000_00000;
-        is_obstacle_hitbox = 0;  
+        obstacle_data <= 16'b00000_000000_00000;
+        is_obstacle_hitbox <= 0;  
 
         // Check if the current pixel matches the obstacle position
         // Obstacle 1 (moving from right to left)

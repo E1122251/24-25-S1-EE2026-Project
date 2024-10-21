@@ -24,8 +24,6 @@ module player_pos(
     
     input clock_100mhz,
     
-    input [5:0] sw,
-    
     input btnU, btnL, btnR, btnD,
     
     input [6:0] pixel_x,
@@ -77,8 +75,6 @@ module player_pos(
     player_move player_move_instance (
         
         .clock_100mhz(clock_100mhz),
-        
-        .sw(sw),
         
         .btnU(btnU),
         .btnL(btnL),

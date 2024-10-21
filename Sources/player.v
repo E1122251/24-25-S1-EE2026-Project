@@ -51,19 +51,6 @@ module player(
     // create pixel_x and pixel_y end
     
     
-    // debounce btns begin
-    
-    wire btnC_debounced; wire btnU_debounced; wire btnL_debounced; wire btnR_debounced; wire btnD_debounced;
-    
-    debounce debounce_btnC ( .clock_100mhz(clock_100mhz), .signal(btnC), .signal_debounced(btnC_debounced) );
-    debounce debounce_btnU ( .clock_100mhz(clock_100mhz), .signal(btnU), .signal_debounced(btnU_debounced) );
-    debounce debounce_btnL ( .clock_100mhz(clock_100mhz), .signal(btnL), .signal_debounced(btnL_debounced) );
-    debounce debounce_btnR ( .clock_100mhz(clock_100mhz), .signal(btnR), .signal_debounced(btnR_debounced) );
-    debounce debounce_btnD ( .clock_100mhz(clock_100mhz), .signal(btnD), .signal_debounced(btnD_debounced) );
-    
-    // debounce btns end
-    
-    
     // instantiate player_pos begin
     
     wire [6:0] player_x;
@@ -73,12 +60,10 @@ module player(
         
         .clock_100mhz(clock_100mhz),
         
-        .sw(sw[5:0]),
-        
-        .btnU(btnU_debounced),
-        .btnL(btnL_debounced),
-        .btnR(btnR_debounced),
-        .btnD(btnD_debounced),
+        .btnU(btnU),
+        .btnL(btnL),
+        .btnR(btnR),
+        .btnD(btnD),
         
         .pixel_x(pixel_x),
         .pixel_y(pixel_y),
@@ -128,7 +113,7 @@ module player(
             
         end else if ( is_player_chassis ) begin
             
-            oled_data_player <= 16'd31;
+            oled_data_player <= 16'd2016;
             
         end else begin
             

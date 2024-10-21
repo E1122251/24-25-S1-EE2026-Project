@@ -49,7 +49,7 @@ module player_move_input(
     
     // always block to control input_hor begin
     
-    reg [1:0] storage_hor = 2'b00; reg [1:0] storage_vert = 3'b00;
+    reg [1:0] storage_hor = 2'b00;
     
     always @(posedge clock_100mhz) begin
         
@@ -92,6 +92,8 @@ module player_move_input(
     
     // always block to control input_vert begin
     
+    reg [1:0] storage_vert = 3'b00;
+    
     always @(posedge clock_100mhz) begin
         
         if ( !game_active ) begin
@@ -128,6 +130,6 @@ module player_move_input(
         
     end
     
-    // always block to control input_vert begin
+    // always block to control input_vert end
     
 endmodule
