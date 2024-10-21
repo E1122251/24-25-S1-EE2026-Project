@@ -28,13 +28,29 @@ module Top_Student (
     
     );
     
-    // define passwords begin
+    // debounce btns begin
     
-    wire game_active;
+    wire btnC_db; wire btnU_db; wire btnL_db; wire btnR_db; wire btnD_db;
     
-    assign game_active = ( sw[15] == 1 );
+    debounce_pbs debounce_pbs_instance (
+        
+        .clock_100mhz(clock_100mhz),
+        
+        .btnC(btnC), .btnU(btnU), .btnL(btnL), .btnR(btnR), .btnD(btnD),
+        
+        .btnC_db(btnC_db), .btnU_db(btnU_db), .btnL_db(btnL_db), .btnR_db(btnR_db), .btnD_db(btnD_db)
+        
+        );
     
-    // define passwords end
+    // debounce btns end
+    
+    
+    // declare game_active begin
+    
+    reg game_active = 0;
+    
+    // declare game_active end
+    
     
     // instantiate Oled_Display begin
     
@@ -76,6 +92,31 @@ module Top_Student (
     
     // instantiate Oled_Display end
     
+    
+    // instantiate menu begin
+    
+    wire [15:0] oled_data_menu;
+    wire start_game;
+    
+    big_menu big_menu_instance (
+        
+        .clock_100mhz(clock_100mhz),
+        
+        .btnC(btnC_db),
+        .btnU(btnU_db),
+        .btnD(btnD_db),
+        
+        .pixel_index(pixel_index),
+        
+        .oled_data_menu(oled_data_menu),
+        
+        .start_game(start_game)
+                
+        );
+        
+    // instantiate menu end
+    
+    
     // instantiate game begin
     
     wire [15:0] led_game;
@@ -91,11 +132,11 @@ module Top_Student (
         
         .sw(sw),
         
-        .btnC(btnC),
-        .btnU(btnU),
-        .btnL(btnL),
-        .btnR(btnR),
-        .btnD(btnD),
+        .btnC(btnC_db),
+        .btnU(btnU_db),
+        .btnL(btnL_db),
+        .btnR(btnR_db),
+        .btnD(btnD_db),
         
         .pixel_index(pixel_index),
         
@@ -111,6 +152,21 @@ module Top_Student (
         );
     
     // instantiate game end
+    
+    
+    // always block to control game_active begin
+    
+    always @(posedge clock_100mhz) begin
+        
+        if ( !game_active && start_game ) begin
+            
+            game_active <= 1;
+            
+        end
+        
+    end
+    
+    // always block to control game_active end
     
     
     // always block to assign led and oled_data begin
@@ -133,7 +189,7 @@ module Top_Student (
             seg <= ~8'b0000_0000;
             an <= ~4'b0000;
             
-            oled_data <= 0;
+            oled_data <= oled_data_menu;
             
         end
         
@@ -141,5 +197,5 @@ module Top_Student (
     
     // always block to assign led and oled_data end
     
-    endmodule
+endmodule
     

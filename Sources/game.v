@@ -47,6 +47,7 @@ module game(
     
     // localparam end
     
+    
     // instantiate player begin
     
     wire [15:0] led_player;
@@ -152,9 +153,13 @@ module game(
             
             oled_data_game <= oled_data_player;
             
-        end else begin
+        end else if ( oled_data_stage != 0 ) begin
         
             oled_data_game <= oled_data_stage;
+            
+        end else begin
+            
+            oled_data_game <= 0;
             
         end
         
