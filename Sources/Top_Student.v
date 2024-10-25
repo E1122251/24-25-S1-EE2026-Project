@@ -130,7 +130,7 @@ module Top_Student (
         
         .clock_100mhz(clock_100mhz),
         
-        .sw(sw),
+        .sw(sw[1:0]),
         
         .btnC(btnC_db),
         .btnU(btnU_db),

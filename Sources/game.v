@@ -24,7 +24,7 @@ module game(
     
     input clock_100mhz,
     
-    input [15:0] sw,
+    input [1:0] sw,
     
     input btnC, btnU, btnL, btnR, btnD,
     
@@ -61,7 +61,6 @@ module game(
         
         .sw(sw),
         
-        .btnC(btnC),
         .btnU(btnU),
         .btnL(btnL),
         .btnR(btnR),
@@ -141,7 +140,7 @@ module game(
     // control seg_game and an_game end
     
     
-    // always loop to control oled_data_game begin
+    // always block to control oled_data_game begin
     
     always @(posedge clock_100mhz) begin
         
@@ -149,7 +148,7 @@ module game(
             
             oled_data_game <= RED;
             
-        end else if ( is_player_hitbox ) begin
+        end else if ( oled_data_player != 0 ) begin
             
             oled_data_game <= oled_data_player;
             
@@ -165,6 +164,6 @@ module game(
         
     end
     
-    // always loop to control oled_data_game end
+    // always block to control oled_data_game end
     
 endmodule

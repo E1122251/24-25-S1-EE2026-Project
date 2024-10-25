@@ -37,8 +37,13 @@ module player_move(
     input player_at_top_edge,
     input player_at_bot_edge,
     
+    input player_is_speedy,
+    
     output reg [6:0] player_x = 7'd0,
-    output reg [5:0] player_y = 6'd28
+    output reg [5:0] player_y = 6'd28,
+    
+    output [3:0] player_move_hor_state, 
+    output [3:0] player_move_vert_state
     
     );
     
@@ -118,9 +123,7 @@ module player_move(
     // instantiate player_move_input end
     
     
-    // instantiate player_speed begin
-    
-    wire [3:0] player_move_hor_state; wire [3:0] player_move_vert_state;
+    // instantiate player_vector begin
     
     wire clock_player_move_hor; wire clock_player_move_vert;
     
@@ -141,7 +144,9 @@ module player_move(
         
         .player_at_top_edge(player_at_top_edge),
         .player_at_bot_edge(player_at_bot_edge),
-                
+        
+        .player_is_speedy(player_is_speedy),
+        
         .player_move_hor_state(player_move_hor_state),
         .player_move_vert_state(player_move_vert_state),
         
@@ -150,7 +155,7 @@ module player_move(
         
         );
     
-    // instantiate player_speed end
+    // instantiate player_vector end
     
     
     // always block to control player_x begin

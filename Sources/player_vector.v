@@ -38,6 +38,8 @@ module player_vector (
     input player_at_top_edge,
     input player_at_bot_edge,
     
+    input player_is_speedy,
+    
     output reg [3:0] player_move_hor_state = 4'd6,
     output reg [3:0] player_move_vert_state = 4'd6,
     
@@ -146,6 +148,10 @@ module player_vector (
                     
                     player_move_hor_state <= STOP;
                     
+                end else if ( player_is_speedy ) begin
+                    
+                    player_move_hor_state <= LEFT_6;
+                    
                 end else if ( player_move_hor_state == LEFT_6) begin
                     
                     player_move_hor_state <= player_move_hor_state;
@@ -168,6 +174,10 @@ module player_vector (
                     
                     player_move_hor_state <= STOP;
                     
+                end else if ( player_is_speedy ) begin
+                    
+                    player_move_hor_state <= RIGHT_6;
+                    
                 end else if ( ( player_move_hor_state >= LEFT_6 ) && ( player_move_hor_state <= LEFT_2 ) ) begin
                     
                     player_move_hor_state <= player_move_hor_state + 2;
@@ -186,7 +196,11 @@ module player_vector (
                 
             end else if ( input_hor == NULL ) begin
                 
-                if ( ( player_move_hor_state >= LEFT_6 ) && ( player_move_hor_state <= LEFT_1 ) ) begin
+                if ( player_is_speedy) begin
+                    
+                    player_move_hor_state <= STOP;
+                    
+                end else if ( ( player_move_hor_state >= LEFT_6 ) && ( player_move_hor_state <= LEFT_1 ) ) begin
                     
                     player_move_hor_state <= player_move_hor_state + 1;
                     delay_hor <= DELAY;
@@ -234,6 +248,10 @@ module player_vector (
                     
                     player_move_vert_state <= STOP;
                     
+                end else if ( player_is_speedy ) begin
+                    
+                    player_move_vert_state <= UP_6;
+                    
                 end else if ( player_move_vert_state == UP_6) begin
                     
                     player_move_vert_state <= player_move_vert_state;
@@ -256,6 +274,10 @@ module player_vector (
                     
                     player_move_vert_state <= STOP;
                     
+                end else if ( player_is_speedy ) begin
+                    
+                    player_move_vert_state <= DOWN_6;
+                    
                 end else if ( ( player_move_vert_state >= UP_6 ) && ( player_move_vert_state <= UP_2 ) ) begin
                     
                     player_move_vert_state <= player_move_vert_state + 2;
@@ -274,7 +296,11 @@ module player_vector (
                 
             end else if ( input_vert == NULL ) begin
                 
-                if ( ( player_move_vert_state >= UP_6 ) && ( player_move_vert_state <= UP_1 ) ) begin
+                if ( player_is_speedy ) begin
+                    
+                    player_move_vert_state <= STOP;
+                    
+                end else if ( ( player_move_vert_state >= UP_6 ) && ( player_move_vert_state <= UP_1 ) ) begin
                     
                     player_move_vert_state <= player_move_vert_state + 1;
                     delay_vert <= DELAY;
