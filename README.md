@@ -11,8 +11,9 @@
 >   - player
 >     - player_pos
 >       - player_move
->       - player_vector
->         - clocks_player_gen
+>         - player_move_input
+>         - player_vector
+>           - clocks_player_gen
 >     - player_hitbox
 >     - player_led
 >     - player_display
