@@ -31,8 +31,13 @@ module player_pos(
     
     input game_active,
     
+    input player_is_speedy,
+    
     output [6:0] player_x,
-    output [5:0] player_y
+    output [5:0] player_y,
+    
+    output [3:0] player_move_hor_state, 
+    output [3:0] player_move_vert_state
     
     );
     
@@ -92,8 +97,13 @@ module player_pos(
         .player_at_top_edge(player_at_top_edge),
         .player_at_bot_edge(player_at_bot_edge),
         
+        .player_is_speedy(player_is_speedy),
+        
         .player_x(player_x),
-        .player_y(player_y)
+        .player_y(player_y),
+        
+        .player_move_hor_state(player_move_hor_state), 
+        .player_move_vert_state(player_move_vert_state)
         
         );
     

@@ -9,11 +9,14 @@
 >   - game
 >
 >   - player
->     - player_hitbox
 >     - player_pos
 >       - player_move
 >         - player_move_input
->         - player_speed
+>         - player_vector
+>           - clocks_player_gen
+>     - player_hitbox
+>     - player_led
+>     - player_display
 >    
 >    - stage
 >
