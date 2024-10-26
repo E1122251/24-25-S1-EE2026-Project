@@ -22,17 +22,12 @@
 
 module home_page(
 input clock_100mhz,
-    input btnC, btnU, btnD, 
     input [12:0] pixel_index_home,
-    output reg [15:0] oled_data_home,
-    input  wire [2:0] home_state,
-    output reg [2:0] home_stateout = 3'b000
+    input [1:0] arrow_home,
+    output reg [15:0] oled_data_home
 
     );
             
-
-wire clock_25mhz;
-flexi_clockdivider  clock_25mhz_gen( .clock_100mhz(clock_100mhz), .m(32'd1), .clock_output(clock_25mhz) );
 
      //coordinates
      wire [6:0]x;
@@ -75,51 +70,8 @@ flexi_clockdivider  clock_25mhz_gen( .clock_100mhz(clock_100mhz), .m(32'd1), .cl
        assign arrow_START = ((x==18 &  y>=40 & y<=46) | (x==19 &  y>=41 & y<=45)| (x==20 & y>=42& y<=44)| (x==21 & y==43));
        assign arrow_COLOR = ((x==18 &  y>=48 & y<=54) | (x==19 &  y>=49 & y<=53)| (x==20 & y>=50 & y<=52)| (x==21 & y==51));
         
-        
-     //moving arrows up and down
-reg selected_arrow_home;
-     reg btnU_pressed=0;
-     reg btnD_pressed=0;
-wire [1:0]btn = {btnU,btnD};
-reg btn_pressed;
- 
-always @(posedge clock_100mhz) begin
-if (home_state==3'b000) begin
-         if (btnD) begin  
-         btnD_pressed <= 1'b1;
- end else btnD_pressed<= btnD_pressed;
- 
- if (btnD_pressed) begin 
-        selected_arrow_home <=arrow_COLOR;
-        end 
-
-if (btnU) begin  
-         btnU_pressed <= 1'b1;
- end else btnU_pressed<= btnU_pressed;
- 
- if (btnU_pressed) begin 
-        selected_arrow_home <=arrow_START;  
-        end
-if (btnU_pressed & btnD_pressed) begin
-    btnU_pressed<=0;
-    btnD_pressed<=0;
-    end
- 
- else begin 
-    selected_arrow_home<= (btnD_pressed) ? arrow_COLOR : arrow_START;
-    if (btnD_pressed) begin
-        home_stateout<=3'b010; //for color
-    end else if (!btnD_pressed) begin
-        home_stateout<=3'b001; //for start 
-    end
-end
-end  
-end
-
-
 //colors
      always @(posedge clock_100mhz) begin
-if (home_state==3'b000) begin
         if (DRIFT_KART) begin
             oled_data_home <=RED;
             end
@@ -127,14 +79,16 @@ if (home_state==3'b000) begin
             oled_data_home  <= WHITE;
             end
         else if (COLOR) begin
-                oled_data_home <= WHITE;
-                end  
-        else if (selected_arrow_home) begin
-                        oled_data_home <= arrow_color;
-                        end       
+            oled_data_home <= WHITE;
+            end  
+        else if ( ( arrow_home == 1 ) && ( arrow_START ) ) begin
+            oled_data_home <= arrow_color;
+            end
+        else if ( ( arrow_home == 2 ) && ( arrow_COLOR ) ) begin
+            oled_data_home <= arrow_color;
+            end
         else begin
             oled_data_home  <= BLACK;
-end
-end
-end
-            endmodule 
+            end
+        end
+endmodule 

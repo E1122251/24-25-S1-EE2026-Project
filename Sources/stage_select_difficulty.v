@@ -22,19 +22,11 @@
 
 module stage_select_difficulty(
 input clock_100mhz,
-    input btnU, btnD, 
     input [12:0] pixel_index_stagediff,
-    output reg [15:0] oled_data_stagediff,
-    input wire [2:0] select_stateout,
-    output reg [2:0] stage_diff_stateout = 3'b000
+    input [1:0] arrow_diff,
+    output reg [15:0] oled_data_stagediff
 
     );
-
-
-wire clock_6p25mhz;
-wire clock_25mhz;
-flexi_clockdivider clock_6p25mhz_gen( .clock_100mhz(clock_100mhz), .m(32'd7), .clock_output(clock_6p25mhz));
-flexi_clockdivider  clock_25mhz_gen( .clock_100mhz(clock_100mhz), .m(32'd1), .clock_output(clock_25mhz) );
 
      //coordinates
      wire [6:0]x;
@@ -70,66 +62,26 @@ flexi_clockdivider  clock_25mhz_gen( .clock_100mhz(clock_100mhz), .m(32'd1), .cl
      wire arrow_EASY; wire arrow_HARD;
      assign arrow_EASY = ((x==25 &  y>=40 & y<=46) | (x==26 &  y>=41 & y<=45)| (x==27 & y>=42& y<=44)| (x==28 & y==43));
      assign arrow_HARD = ((x==25 &  y>=48 & y<=54) | (x==26 &  y>=49 & y<=53)| (x==27 & y>=50 & y<=52)| (x==28 & y==51));
- 
-     //moving arrows up and down
-reg selected_arrow_stagediff;
-     reg btnU_pressed=0;
-     reg btnD_pressed=0;
-wire [1:0]btn = {btnU,btnD};
-reg btn_pressed;
- 
-always @(posedge clock_100mhz) begin
-if (select_stateout==3'b011) begin
-         if (btnD) begin  
-         btnD_pressed <= 1'b1;
- end else btnD_pressed<= btnD_pressed;
- 
- if (btnD_pressed) begin 
-        selected_arrow_stagediff <=arrow_HARD;
-        end 
 
-if (btnU) begin  
-         btnU_pressed <= 1'b1;
- end else btnU_pressed<= btnU_pressed;
- 
- if (btnU_pressed) begin 
-        selected_arrow_stagediff<=arrow_EASY;  
-        end
-if (btnU_pressed & btnD_pressed) begin
-    btnU_pressed<=0;
-    btnD_pressed<=0;
-    end
- 
- else begin 
-    selected_arrow_stagediff<= (btnD_pressed) ? arrow_HARD : arrow_EASY;
-    if (btnD_pressed) begin
-        stage_diff_stateout<=3'b101; //HARD
-    end else if (!btnD_pressed) begin
-         stage_diff_stateout<=3'b110; //EASY
-    end
-end
-end  
-end 
      //colors
           always @(posedge clock_100mhz) begin
-if (select_stateout==3'b011) begin
-             if (STAGE) begin
-                 oled_data_stagediff<=RED;
-                 end
-             else if (EASY) begin
-                 oled_data_stagediff<= WHITE;
-                 end
-             else if (HARD) begin
-                     oled_data_stagediff<= WHITE;
-                     end  
-         //    else if (selected_arrow_mode) begin
-         else if (selected_arrow_stagediff) begin
-            oled_data_stagediff<= arrow_color;
-            end       
-     
-             else begin
-                 oled_data_stagediff <= BLACK;
-                 end
-                 end
-                 end   
+            if (STAGE) begin
+                oled_data_stagediff<=RED;
+                end
+            else if (EASY) begin
+                oled_data_stagediff<= WHITE;
+                end
+            else if (HARD) begin
+                oled_data_stagediff<= WHITE;
+                end  
+            else if ( ( arrow_diff == 1 ) && ( arrow_EASY ) ) begin
+                oled_data_stagediff<= arrow_color;
+                end       
+            else if ( ( arrow_diff == 2 ) && ( arrow_HARD ) ) begin
+                oled_data_stagediff<= arrow_color;
+                end
+            else begin
+                oled_data_stagediff <= BLACK;
+                end
+            end   
 endmodule
