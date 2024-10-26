@@ -22,21 +22,16 @@
 
 module select_mode(
 input clock_100mhz,
-    input  btnU, btnD,
-    input [12:0] pixel_index_select,
-    output reg [15:0] oled_data_select,
-    input wire [2:0] home_stateout,
-    output reg [2:0] select_stateout = 3'b000
+    input [12:0] pixel_index_mode,
+    input [1:0] arrow_mode,
+    output reg [15:0] oled_data_mode
     );
-
-wire clock_25mhz;
-flexi_clockdivider  clock_25mhz_gen( .clock_100mhz(clock_100mhz), .m(32'd1), .clock_output(clock_25mhz) );
 
      //coordinates
      wire [6:0]x;
      wire [5:0]y;
-     assign x = (pixel_index_select%96);
-     assign y = (pixel_index_select/96);  
+     assign x = (pixel_index_mode%96);
+     assign y = (pixel_index_mode/96);  
      
      localparam RED = 16'd63488;
      localparam BLACK = 16'd0;
@@ -69,68 +64,27 @@ flexi_clockdivider  clock_25mhz_gen( .clock_100mhz(clock_100mhz), .m(32'd1), .cl
        assign arrow_STAGE = ((x==18 &  y>=40 & y<=46) | (x==19 &  y>=41 & y<=45)| (x==20 & y>=42& y<=44)| (x==21 & y==43));
        assign arrow_ENDLESS = ((x==18 &  y>=48 & y<=54) | (x==19 &  y>=49 & y<=53)| (x==20 & y>=50 & y<=52)| (x==21 & y==51));
         
-        
-     //moving arrows up and down
-reg selected_arrow_mode;
-     reg btnU_pressed_select=0;
-     reg btnD_pressed_select=0;
-wire [1:0]btn = {btnU,btnD};
-reg btn_pressed;
- 
-always @(posedge clock_100mhz) begin
-if (home_stateout==3'b001) begin
-         if (btnD) begin  
-          btnD_pressed_select <= 1'b1;
- end else  btnD_pressed_select<=  btnD_pressed_select;
- 
- if ( btnD_pressed_select) begin 
-        selected_arrow_mode <=arrow_STAGE;
-        end 
-
-if (btnU) begin  
-         btnU_pressed_select <= 1'b1;
- end else btnU_pressed_select<= btnU_pressed_select;
- 
- if (btnU_pressed_select) begin 
-        selected_arrow_mode <=arrow_ENDLESS;  
-        end
-if (btnU_pressed_select &  btnD_pressed_select) begin
-    btnU_pressed_select<=0;
-    btnD_pressed_select<=0;
-    end
- 
- else begin 
-    selected_arrow_mode<= ( btnD_pressed_select) ? arrow_ENDLESS : arrow_STAGE;
-        if ( btnD_pressed_select) begin
-        select_stateout<=3'b100; //for endless
-    end else if (!btnD_pressed_select) begin
-        select_stateout<=3'b011; //for stage
-    end
-    end
-end  
-end
-
 //colors
      always @(posedge clock_100mhz) begin
-if (home_stateout==3'b001) begin
         if (MODE) begin
-            oled_data_select <=RED;
+            oled_data_mode <=RED;
             end
         else if (STAGE) begin
-            oled_data_select <= WHITE;
+            oled_data_mode <= WHITE;
             end
         else if (ENDLESS) begin
-                oled_data_select <= WHITE;
-                end  
-        else if (selected_arrow_mode) begin
-                        oled_data_select<= arrow_color;
-                        end       
-
+            oled_data_mode <= WHITE;
+            end  
+        else if ( ( arrow_mode == 1 ) && ( arrow_STAGE ) ) begin
+            oled_data_mode <= arrow_color;
+            end       
+        else if ( ( arrow_mode == 2 ) && ( arrow_ENDLESS ) ) begin
+            oled_data_mode <= arrow_color;
+            end
         else begin
-            oled_data_select <= BLACK;
+            oled_data_mode <= BLACK;
             end
-            end
-            end
+        end
         
 
 endmodule
