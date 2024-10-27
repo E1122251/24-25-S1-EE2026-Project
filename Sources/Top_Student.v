@@ -108,6 +108,8 @@ module Top_Student (
         
         .pixel_index(pixel_index),
         
+        .game_active(game_active),
+        
         .oled_data_menu(oled_data_menu),
         
         .start_game(start_game)
@@ -125,6 +127,8 @@ module Top_Student (
     wire [3:0] an_game;
      
     wire [15:0] oled_data_game;
+    
+    wire return_to_menu;
     
     game game_instance (
         
@@ -147,7 +151,9 @@ module Top_Student (
         .seg_game(seg_game),
         .an_game(an_game),
         
-        .oled_data_game(oled_data_game)
+        .oled_data_game(oled_data_game),
+        
+        .return_to_menu(return_to_menu)
         
         );
     
@@ -161,6 +167,10 @@ module Top_Student (
         if ( !game_active && start_game ) begin
             
             game_active <= 1;
+            
+        end else if ( game_active && return_to_menu ) begin
+            
+            game_active <= 0;
             
         end
         

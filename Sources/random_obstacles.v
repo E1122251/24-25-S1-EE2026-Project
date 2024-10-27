@@ -114,10 +114,3 @@ module random_obstacles (
         end
     end
 endmodule
-
-
-
-
-
-
-

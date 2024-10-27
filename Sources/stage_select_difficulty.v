@@ -23,7 +23,7 @@
 module stage_select_difficulty(
 input clock_100mhz,
     input [12:0] pixel_index_stagediff,
-    input [1:0] arrow_diff,
+    input [1:0] arrow_stagediff,
     output reg [15:0] oled_data_stagediff
 
     );
@@ -74,10 +74,10 @@ input clock_100mhz,
             else if (HARD) begin
                 oled_data_stagediff<= WHITE;
                 end  
-            else if ( ( arrow_diff == 1 ) && ( arrow_EASY ) ) begin
+            else if ( ( arrow_stagediff == 1 ) && ( arrow_EASY ) ) begin
                 oled_data_stagediff<= arrow_color;
                 end       
-            else if ( ( arrow_diff == 2 ) && ( arrow_HARD ) ) begin
+            else if ( ( arrow_stagediff == 2 ) && ( arrow_HARD ) ) begin
                 oled_data_stagediff<= arrow_color;
                 end
             else begin
