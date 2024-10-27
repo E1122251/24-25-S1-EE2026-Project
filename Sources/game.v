@@ -109,17 +109,26 @@ module game(
     
     wire [7:0] seg_logic;
     wire [3:0] an_logic;
+    wire [15:0] oled_data_collision;
+    wire is_collision;
+    wire return_to_menu;
     
     logic logic_instance (
-        
         .clock_100mhz(clock_100mhz),
+        
+        .btnC(btnC),
+        .game_active(game_active),
         
         .is_player_hitbox(is_player_hitbox),
         .is_obstacle_hitbox(is_obstacle_hitbox),
+        .pixel_index(pixel_index),
                 
         .seg(seg_logic),
-        .an(an_logic)
+        .an(an_logic),
         
+        .is_collision(is_collision),
+        .oled_data_collision(oled_data_collision),
+        .return_to_menu(return_to_menu)
         );
     
     // instantiate logic end
@@ -140,30 +149,28 @@ module game(
     // control seg_game and an_game end
     
     
-    // always block to control oled_data_game begin
+
+    // always loop to control oled_data_game begin
     
     always @(posedge clock_100mhz) begin
-        
-        if ( is_player_hitbox && is_obstacle_hitbox ) begin
+        if (is_collision == 1) begin
+            oled_data_game <= oled_data_collision;
+            end
+        else if ( is_player_hitbox && is_obstacle_hitbox ) begin
             
             oled_data_game <= RED;
             
-        end else if ( oled_data_player != 0 ) begin
+        end else if ( is_player_hitbox ) begin
             
             oled_data_game <= oled_data_player;
             
-        end else if ( oled_data_stage != 0 ) begin
-        
-            oled_data_game <= oled_data_stage;
-            
         end else begin
-            
-            oled_data_game <= 0;
-            
+            oled_data_game <= oled_data_stage;
+
         end
         
     end
     
-    // always block to control oled_data_game end
+    // always loop to control oled_data_game end
     
 endmodule
