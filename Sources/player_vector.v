@@ -331,13 +331,13 @@ module player_vector (
         
         if ( !game_active ) begin
             
-            clock_player_move_hor <= 1;
+            clock_player_move_hor <= clock_30hz_vsync;
             
         end else begin
             
             if ( player_move_hor_state == STOP ) begin
                 
-                clock_player_move_hor <= ~clock_player_move_hor;
+                clock_player_move_hor <= 0;
                 
             end else if ( ( player_move_hor_state == LEFT_1 ) ||  ( player_move_hor_state == RIGHT_1 ) ) begin
                 
@@ -378,7 +378,7 @@ module player_vector (
         
         if ( !game_active ) begin
             
-            clock_player_move_vert <= ~clock_player_move_vert;
+            clock_player_move_vert <= clock_30hz_vsync;
             
         end else begin
             
