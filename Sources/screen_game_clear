@@ -1,0 +1,56 @@
+`timescale 1ns / 1ps
+//////////////////////////////////////////////////////////////////////////////////
+// Company: 
+// Engineer: 
+// 
+// Create Date: 10/28/2024 12:51:34 AM
+// Design Name: 
+// Module Name: screen_game_clear
+// Project Name: 
+// Target Devices: 
+// Tool Versions: 
+// Description: 
+// 
+// Dependencies: 
+// 
+// Revision:
+// Revision 0.01 - File Created
+// Additional Comments:
+// 
+//////////////////////////////////////////////////////////////////////////////////
+
+
+module screen_game_clear(
+    input clock_100mhz,
+    input [12:0] pixel_index,
+    input game_active,
+//    input mode,
+    input score,
+    output reg toggle_game_clear_screen,
+    output reg [15:0] oled_data_game_clear
+    );
+    wire [2:0] mod ;
+    always @ (posedge clock_100mhz) begin
+        if (game_active == 1) begin
+            if (mod == 0) begin
+                if (score >= 100) begin
+                toggle_game_clear_screen <= toggle_game_clear_screen;
+                end
+            end
+            else if (mod == 1) begin
+                if (score >= 500) begin
+                toggle_game_clear_screen <= toggle_game_clear_screen;
+                end
+            end
+            if (toggle_game_clear_screen == 1) begin
+               oled_data_game_clear <= 16'hFFFF;
+               end
+        end
+        else begin
+            toggle_game_clear_screen <= 0;
+            end
+        end
+        
+        
+            
+endmodule
