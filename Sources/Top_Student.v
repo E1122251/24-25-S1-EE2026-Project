@@ -96,6 +96,8 @@ module Top_Student (
     // instantiate menu begin
     
     wire [15:0] oled_data_menu;
+    wire mode;
+    wire difficulty;
     wire start_game;
     
     big_menu big_menu_instance (
@@ -111,6 +113,10 @@ module Top_Student (
         .game_active(game_active),
         
         .oled_data_menu(oled_data_menu),
+        
+        .mode(mode),
+        
+        .difficulty(difficulty),
         
         .start_game(start_game)
                 
@@ -145,6 +151,10 @@ module Top_Student (
         .pixel_index(pixel_index),
         
         .game_active(game_active),
+        
+        .mode(mode),
+        
+        .difficulty(difficulty),
         
         .led_game(led_game),
         

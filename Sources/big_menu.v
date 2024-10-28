@@ -26,6 +26,8 @@ input clock_100mhz,
     input wire [12:0] pixel_index,
     input game_active,
     output reg  [15:0] oled_data_menu,
+    output reg mode,
+    output reg difficulty,
     output reg start_game = 0
     );
     
@@ -70,7 +72,7 @@ input clock_100mhz,
         
         if ( game_active ) begin
             
-            state <= 3'b000;
+            state <= 4'b0000;
             
             arrow_home <= 0;
             arrow_mode <= 0;
@@ -79,7 +81,7 @@ input clock_100mhz,
             
         end else begin
         
-            if ( state == 3'b000 ) begin //home
+            if ( state == 4'b0000 ) begin //home
                 
                 if ( btnU ) begin
                     
@@ -93,11 +95,11 @@ input clock_100mhz,
                     
                     if ( arrow_home == 1 ) begin
                         
-                        state <= 3'b001;
+                        state <= 4'b0001;
                         
                     end else if ( arrow_home == 2 ) begin
                         
-                        state <= 3'b010;
+                        state <= 4'b0010;
                         
                     end
                     
@@ -109,7 +111,7 @@ input clock_100mhz,
                 
             end 
             
-            if ( state == 3'b001 ) begin // select mode
+            if ( state == 4'b0001 ) begin // select mode
                 
                 if ( btnU ) begin
                     
@@ -123,11 +125,11 @@ input clock_100mhz,
                     
                     if ( arrow_mode == 1 ) begin
                         
-                        state <= 3'b011; //stage
+                        state <= 4'b0011; //stage
                         
                     end else if ( arrow_mode == 2 ) begin
                         
-                        state <= 3'b100;  //endless
+                        state <= 4'b0100;  //endless
                         
                     end
                     
@@ -139,7 +141,7 @@ input clock_100mhz,
                 
             end 
             
-            if ( state == 3'b011 ) begin // stage select difficulty
+            if ( state == 4'b0011 ) begin // stage select difficulty
                 
                 if ( btnU ) begin
                     
@@ -153,11 +155,11 @@ input clock_100mhz,
                     
                     if ( arrow_stagediff == 1 ) begin
                         
-                        state <= 3'b101; //easy
+                        state <= 4'b0101; //easy
                         
                     end else if ( arrow_stagediff == 2) begin
                         
-                        state <= 3'b110; //hard
+                        state <= 4'b0110; //hard
                         
                     end
                     
@@ -169,7 +171,7 @@ input clock_100mhz,
                 
             end
             
-            if ( state == 3'b100 ) begin // endless select difficulty 
+            if ( state == 4'b0100 ) begin // endless select difficulty 
                 
                 if ( btnU ) begin
                 
@@ -183,7 +185,7 @@ input clock_100mhz,
                     
                     if ( arrow_endlessdiff == 1 ) begin
                         
-                        state <= 3'b111; //easy
+                        state <= 4'b0111; //easy
                         
                     end else if ( arrow_endlessdiff == 2) begin
                         
@@ -205,13 +207,17 @@ input clock_100mhz,
      
     always @(posedge clock_100mhz) begin
     
-        if (state==3'b000) begin //home
+        if (state==4'b0000) begin //home
             
             oled_data_menu <= oled_data_home;
             
+            mode <= 0;
+            
+            difficulty <= 0;
+            
             start_game<=0;
             
-        end else if (state==3'b001) begin //start
+        end else if (state==4'b0001) begin //start
             
             oled_data_menu <= oled_data_mode;
             
@@ -219,29 +225,45 @@ input clock_100mhz,
         
             //oled_data_menu <= oled_data_carcolor;
             
-        end else if (state==3'b011) begin //stage
+        end else if (state==4'b0011) begin //stage
             
             oled_data_menu <=oled_data_stagediff;
             
-        end else if (state==3'b100) begin //endless
+        end else if (state==4'b0100) begin //endless
             
             oled_data_menu <= oled_data_endlessdiff;
             
-        end else if (state==3'b101) begin //stage easy
+        end else if (state==4'b0101) begin //stage easy
             
             start_game<=1;
             
-        end else if (state==3'b110) begin //stage hard
+            mode <= 0;
+            
+            difficulty <= 0;
+            
+        end else if (state==4'b0110) begin //stage hard
             
             start_game<=1;
+            
+            mode <= 0;
+            
+            difficulty <= 1;
         
-        end else if (state==3'b111) begin //endless easy 
+        end else if (state==4'b0111) begin //endless easy 
         
             start_game<=1;
+            
+            mode <= 1;
+            
+            difficulty <= 0;
        
         end else if (state==4'b1000) begin //endless hard
         
             start_game<=1;
+            
+            mode <= 1;
+            
+            difficulty <= 1;
                     
         end else begin
             

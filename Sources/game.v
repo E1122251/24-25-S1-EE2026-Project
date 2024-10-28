@@ -32,6 +32,10 @@ module game(
     
     input game_active,
     
+    input mode,
+    
+    input difficulty,
+    
     output [15:0] led_game,
     
     output [7:0] seg_game,
@@ -42,13 +46,6 @@ module game(
     output return_to_menu
     
     );
-    
-    // localparam begin
-    
-    localparam RED = 16'd63488;
-    
-    // localparam end
-    
     
     // instantiate player begin
     
