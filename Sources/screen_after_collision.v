@@ -52,7 +52,7 @@ module screen_after_collision(
         end
     end
 
-    // hard coded because when I tried to put calculations during animation, it will cause clock cycle to be delayed
+    // hard coded because when I tried to put calculations during animation, it will cause clock cycle to be delayed    
     // car body (45,22) 15x8, last pos (30,17) 58x32  dx = -0.75 dy= 0.25 dw= dh=1.2
     // left headlight (46,24) 4x1, last pos (30,24) 16x7
     // right headlight (56,24) 4x1, last pos (72,24) 4x1
@@ -113,7 +113,7 @@ module screen_after_collision(
     reg [15:0]    right_side_mirror_height =    1;
     reg [15:0]    car_lower_black_space_height =    1;
     
-    reg [5:0] frame_counter = 0;
+    reg [4:0] frame_counter = 0;
     reg [31:0] frame_clock_counter = 0;
     always @ (posedge clock_100mhz)begin
         if(game_active==1 && is_collision==1) begin
@@ -1164,16 +1164,58 @@ module screen_after_collision(
         right_side_mirror_height <=    7    ;
         car_lower_black_space_height <=    5    ;
         end
+        default begin
+        car_body_x_pos <=	44	;
+        left_headlight_x_pos <=    45    ;
+        right_headlight_x_pos <=    57    ;
+        left_lowerlight_x_pos <=    45    ;
+        right_lowerlight_x_pos <=    59    ;
+        nametage_x_pos <=    51    ;
+        window_frame_x_pos <=    45    ;
+        window_x_pos <=    47    ;
+        left_side_mirror_x_pos <=    43    ;
+        right_side_mirror_x_pos <=    61    ;
+        car_lower_black_space_x_pos <=    47    ;
+        //ypos        
+        car_body_y_pos <=    22    ;
+        left_headlight_y_pos <=    24    ;
+        right_headlight_y_pos <=    24    ;
+        left_lowerlight_y_pos <=    27    ;
+        right_lowerlight_y_pos <=    27    ;
+        nametage_y_pos <=    27    ;
+        window_frame_y_pos <=    18    ;
+        window_y_pos <=    19    ;
+        left_side_mirror_y_pos <=    22    ;
+        right_side_mirror_y_pos <=    22    ;
+        car_lower_black_space_y_pos <=    30    ;
+        //width        
+        car_body_width <=    17    ;
+        left_headlight_width <=    5    ;
+        right_headlight_width <=    5    ;
+        left_lowerlight_width <=    1    ;
+        right_lowerlight_width <=    1    ;
+        nametage_width <=    4    ;
+        window_frame_width <=    15    ;
+        window_width <=    13    ;
+        left_side_mirror_width <=    1    ;
+        right_side_mirror_width <=    1    ;
+        car_lower_black_space_width <=    12    ;
+        //height        
+        car_body_height <=    9    ;
+        left_headlight_height <=    1    ;
+        right_headlight_height <=    1    ;
+        left_lowerlight_height <=    1    ;
+        right_lowerlight_height <=    1    ;
+        nametage_height <=    2    ;
+        window_frame_height <=    4    ;
+        window_height <=    2    ;
+        left_side_mirror_height <=    1    ;
+        right_side_mirror_height <=    1    ;
+        car_lower_black_space_height <=    1    ;
+        end
         endcase
     end
-        
-    
 
-
-
-
-
-    
     
     //xy coordinate
     wire [6:0] x = pixel_index % 96;
@@ -1188,6 +1230,7 @@ module screen_after_collision(
         
     //drawing start
     always @ (posedge clock_100mhz)begin
+    //drawing pov of driver begin
         if (square_distance >= 900 && square_distance <= 1225) begin //handle
              oled_data_collision <= 16'hFD20; //orange
              end
@@ -1203,8 +1246,6 @@ module screen_after_collision(
         else if ((x >= 18 && x <= 96) && (y >= 42 && y <= 64)) begin //black square bottom (car display)
             oled_data_collision <= 16'h0000;
             end
-            //17 44
-            //11 43
         //using trapesium calculation to draw window frame
         else if (x <= (22 + (10 * y) / 40) && // right slent of trapezium 
             x >= (4 + (10 * y) / 30) &&  //left slent of trapezium, every increasement of y will cause x to be increase by 1/3
@@ -1236,8 +1277,10 @@ module screen_after_collision(
             )begin
             oled_data_collision <= 16'h4929;
             end
+    //drawing pov of driver begin         
+            
+            
         //car collision animation begin
-        
         else if (x >= left_headlight_x_pos && x < (left_headlight_x_pos) + (left_headlight_width) && //left headlight
             y >= left_headlight_y_pos && y < (left_headlight_y_pos) + (left_headlight_height)
             )begin
@@ -1293,7 +1336,7 @@ module screen_after_collision(
             )begin
             oled_data_collision <= 16'hF800; //red
             end 
-        //car collision animation end
+         //car collision animation end       
         
         
             
