@@ -25,10 +25,12 @@ input clock_100mhz,
     input btnC, btnU, btnD,
     input wire [12:0] pixel_index,
     input game_active,
+    input [31:0] counter_RNG,
     output reg  [15:0] oled_data_menu,
     output reg mode,
     output reg difficulty,
-    output reg start_game = 0
+    output reg start_game = 0,
+    output reg [31:0] seed_RNG = 32'd1
     );
     
     reg [3:0] state = 4'b0000;
@@ -220,6 +222,8 @@ input clock_100mhz,
         end else if (state==4'b0001) begin //start
             
             oled_data_menu <= oled_data_mode;
+            
+            seed_RNG <= counter_RNG;
             
         //end else if (state==3'b010) begin //color
         
