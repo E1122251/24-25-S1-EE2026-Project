@@ -1,56 +1,41 @@
-`timescale 1ns / 1ps
-//////////////////////////////////////////////////////////////////////////////////
-// Company: 
-// Engineer: 
-// 
-// Create Date: 10/28/2024 12:51:34 AM
-// Design Name: 
-// Module Name: screen_game_clear
-// Project Name: 
-// Target Devices: 
-// Tool Versions: 
-// Description: 
-// 
-// Dependencies: 
-// 
-// Revision:
-// Revision 0.01 - File Created
-// Additional Comments:
-// 
-//////////////////////////////////////////////////////////////////////////////////
-
-
 module screen_game_clear(
     input clock_100mhz,
     input [12:0] pixel_index,
     input game_active,
 //    input mode,
+//    input difficulty,
     input score,
+    input btnC,
+    
     output reg toggle_game_clear_screen,
-    output reg [15:0] oled_data_game_clear
+    output reg [15:0] oled_data_game_clear,
+    output reg return_to_menu = 0
     );
-    wire [2:0] mod ;
+    reg [2:0] mod ;
+    reg [2:0] difficulty ;
     always @ (posedge clock_100mhz) begin
-        if (game_active == 1) begin
-            if (mod == 0) begin
-                if (score >= 100) begin
+        if (game_active == 1 && mod == 0) begin
+            if (difficulty ==0 && score >= 100) begin
                 toggle_game_clear_screen <= toggle_game_clear_screen;
+                    if (btnC ==1) begin
+                        return_to_menu <= 1;
+                        end
                 end
-            end
-            else if (mod == 1) begin
-                if (score >= 500) begin
+            else if (difficulty ==1 && score >= 200) begin
                 toggle_game_clear_screen <= toggle_game_clear_screen;
+                    if (btnC ==1) begin
+                        return_to_menu <= 1;
+                        end
                 end
-            end
             if (toggle_game_clear_screen == 1) begin
                oled_data_game_clear <= 16'hFFFF;
+               //screen after clear not made yet
                end
         end
         else begin
             toggle_game_clear_screen <= 0;
+            return_to_menu <= 0;
             end
         end
-        
-        
-            
+
 endmodule
