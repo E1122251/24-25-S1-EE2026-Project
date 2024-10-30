@@ -70,6 +70,7 @@ module is_collision(
             end
             end
         else begin
+            is_speed_powerup_colliion <=0;
             speed_powerup_counter <= 0;         
             end
     end
@@ -91,6 +92,7 @@ module is_collision(
             end
             end
         else begin
+            is_shield_powerup_colliion <=0;
             shield_powerup_counter <= 0;         
             end
     end 
