@@ -22,7 +22,7 @@
 
 module big_menu(
 input clock_100mhz,
-    input btnC, btnU, btnD,
+    input btnC, btnU, btnD, btnL, btnR,
     input wire [12:0] pixel_index,
     input game_active,
     input [31:0] counter_RNG,
@@ -30,6 +30,8 @@ input clock_100mhz,
     output reg mode,
     output reg difficulty,
     output reg start_game = 0,
+    output reg [15:0] chassis_color = 16'd2016,
+    output reg [15:0] wheel_color = 16'd2016,
     output reg [31:0] seed_RNG = 32'd1
     );
     
@@ -39,8 +41,15 @@ input clock_100mhz,
     reg [1:0] arrow_mode = 0;
     reg [1:0] arrow_stagediff = 0;
     reg [1:0] arrow_endlessdiff = 0;
+    reg [1:0] arrow_carcolor = 0;
+    reg arrow_chassis = 0;
+    reg arrow_wheel = 0;
+   
+   //localparam
+   localparam GREEN = 16'd2016;
+   localparam BLUE = 16'd31;
     
-       //instantiate homepage
+   //instantiate homepage
     wire [15:0] oled_data_home;
 
     home_page homepage( .clock_100mhz(clock_100mhz), .pixel_index_home(pixel_index), .arrow_home(arrow_home), .oled_data_home(oled_data_home) );
@@ -60,16 +69,18 @@ input clock_100mhz,
     endless_diff endlessdiff(.clock_100mhz(clock_100mhz),.pixel_index_endlessdiff(pixel_index),.arrow_endlessdiff(arrow_endlessdiff), 
     .oled_data_endlessdiff(oled_data_endlessdiff) );
     
-     //instantiate car_color page
-     //wire [15:0] oled_data_carcolor;
-     //car_color choosecolor(.clock_100mhz(clock_100mhz), .pixel_index_car(pixel_index),.oled_data_carcolor(oled_data_carcolor));
+    // instantiate car_color page
+    wire [15:0] oled_data_carcolor;
+    car_color choosecolor(.clock_100mhz(clock_100mhz), .pixel_index_car(pixel_index), .arrow_carcolor(arrow_carcolor), .oled_data_carcolor(oled_data_carcolor));
+        
+    //instantiate chassis color
+    wire [15:0] oled_data_chassiscolor;
+    chassis_color colorofchassis( .clock_100mhz(clock_100mhz), .pixel_index_chassiscolor(pixel_index), .arrow_chassis(arrow_chassis), .chassis_color(chassis_color), .oled_data_chassiscolor(oled_data_chassiscolor));
      
-     localparam RED = 16'd63488;
-     localparam BLACK = 16'd0;
-     localparam WHITE = 16'b1111111111111111;
-     localparam arrow_color = 16'b1110110011100011;
-
-     
+    //instantiate wheel color
+    wire [15:0] oled_data_wheelcolor;
+    wheel_color colorofwheel(.clock_100mhz(clock_100mhz),.pixel_index_wheelcolor(pixel_index), .arrow_wheel(arrow_wheel), .wheel_color(wheel_color),.oled_data_wheelcolor(oled_data_wheelcolor));
+    
     always @(posedge clock_100mhz) begin
         
         if ( game_active ) begin
@@ -80,6 +91,8 @@ input clock_100mhz,
             arrow_mode <= 0;
             arrow_stagediff <= 0;
             arrow_endlessdiff <= 0;
+            arrow_chassis <= 0;
+            arrow_wheel <= 0;
             
         end else begin
         
@@ -143,6 +156,44 @@ input clock_100mhz,
                 
             end 
             
+            if ( state == 4'b0010 ) begin //car color
+                
+                if ( btnU ) begin
+                    
+                    arrow_carcolor <= 1;
+                    
+                end else if ( btnD ) begin
+                    
+                    arrow_carcolor <= 2;
+                    
+                end else if ( btnL ) begin
+                    
+                    arrow_carcolor <=3;
+                    
+                end else if ( btnC ) begin
+                    
+                    if ( arrow_carcolor == 1 ) begin
+                        
+                        state <= 4'b1001; //chassis color
+                        
+                    end else if ( arrow_carcolor == 2 ) begin
+                        
+                        state <= 4'b1010; // wheel color
+                        
+                    end else if ( arrow_carcolor == 3 ) begin
+                        
+                        state <= 4'b0000; //home
+                        
+                    end
+                    
+                end
+                
+            end else begin
+                
+                arrow_carcolor <= 0;
+                
+            end
+            
             if ( state == 4'b0011 ) begin // stage select difficulty
                 
                 if ( btnU ) begin
@@ -202,6 +253,70 @@ input clock_100mhz,
                 arrow_endlessdiff <= 0;
                 
             end
+            
+            if ( state == 4'b1001 ) begin //chassis color
+                
+                if ( btnL ) begin
+                    
+                    chassis_color <= GREEN;
+                    arrow_chassis <= 0;
+                    
+                end else if ( btnR ) begin
+                    
+                    chassis_color <= BLUE;
+                    arrow_chassis <= 0;
+                    
+                end else if ( btnD ) begin
+                    
+                    arrow_chassis <= 1;
+                    
+                end else if ( btnC ) begin
+                    
+                    if ( arrow_chassis == 1 ) begin
+                        
+                        state <= 4'b0010; //car color
+                        
+                    end
+                    
+                end
+                    
+            end else begin
+                
+                arrow_chassis <= 0;
+                
+            end
+            
+            if ( state == 4'b1010 ) begin //wheel color
+                
+                if ( btnL ) begin
+                    
+                    wheel_color <= GREEN;
+                    arrow_wheel <= 0;
+                    
+                end else if ( btnR ) begin
+                    
+                    wheel_color <= BLUE;
+                    arrow_wheel <= 0;
+                    
+                end else if ( btnD ) begin
+                    
+                    arrow_wheel <= 1;
+                    
+                end else if ( btnC ) begin
+                    
+                    if ( arrow_wheel == 1 ) begin
+                        
+                        state <= 4'b0010; // car color
+                        
+                    end
+                    
+                end
+                
+            end else begin
+                
+                arrow_wheel <= 0;
+                
+            end
         
         end
      
@@ -225,9 +340,9 @@ input clock_100mhz,
             
             seed_RNG <= counter_RNG;
             
-        //end else if (state==3'b010) begin //color
+        end else if (state==4'b0010) begin //color
         
-            //oled_data_menu <= oled_data_carcolor;
+            oled_data_menu <= oled_data_carcolor;
             
         end else if (state==4'b0011) begin //stage
             
@@ -269,9 +384,17 @@ input clock_100mhz,
             
             difficulty <= 1;
                     
+        end else if (state==4'b1001) begin //chassis color
+            
+            oled_data_menu <= oled_data_chassiscolor;
+            
+        end else if (state==4'b1010) begin //wheel color
+            
+            oled_data_menu <= oled_data_wheelcolor;
+            
         end else begin
             
-            oled_data_menu<=oled_data_menu;
+            oled_data_menu <= oled_data_menu;
             
         end
         
