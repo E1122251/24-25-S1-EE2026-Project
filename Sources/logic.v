@@ -108,6 +108,12 @@ module logic(
         .return_to_logic(return_clear)
         );
     // instantiate screen_game_clear end
+    always @ (*) begin
+        if (return_win ==1 || return_death ==1) begin
+            return_to_menu_in_logic <= 1;
+            end
+        end
+    
     
     
         
