@@ -25,6 +25,8 @@ module logic(
     
     input btnC,
     input game_active,
+    input mode,
+    input difficulty,
     
     input is_player_hitbox,
     input is_obstacle_hitbox,
@@ -43,7 +45,8 @@ module logic(
     output [15:0] oled_data_game_clear,
     output return_to_menu
     );
-    
+    reg return_to_menu_in_logic= 0;
+    assign return_to_menu = return_to_menu_in_logic;
     
     // instantiate is_collision begin
     is_collision is_collision_instance (
@@ -61,7 +64,6 @@ module logic(
         );
     // instantiate is_collision end
     wire return_death;
-    assign return_to_menu = return_death;
 
     // instantiate screen_after_collision begin
     screen_after_collision screen_after_collision_instance(
@@ -92,29 +94,28 @@ module logic(
         .score(score)
         );
     // instantiate score_logic end
-    wire return_clear;
-    assign return_to_menu = return_clear;
+    wire return_win;
     // instantiate screen_game_clear begin
     screen_game_clear screen_game_clear_instance(
         .clock_100mhz(clock_100mhz),
         .pixel_index(pixel_index),
         .game_active(game_active),
-        
+        .mode(mode),
+        .mode(difficulty),
         .score(score),
         .btnC(btnC),
         
         .toggle_game_clear_screen(toggle_game_clear_screen),
         .oled_data_game_clear(oled_data_game_clear),
-        .return_to_logic(return_clear)
+        .return_to_logic(return_win)
         );
     // instantiate screen_game_clear end
+        
     always @ (*) begin
         if (return_win ==1 || return_death ==1) begin
             return_to_menu_in_logic <= 1;
             end
         end
-    
-    
     
         
 endmodule
