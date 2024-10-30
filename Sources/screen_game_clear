@@ -33,8 +33,7 @@ module screen_game_clear(
     output reg [15:0] oled_data_game_clear,
     output reg return_to_logic = 0
     );
-//    reg [2:0] mod = 0;
-//    reg [2:0] difficulty = 0;
+
     wire [6:0] x = pixel_index % 96;
     wire [5:0] y = pixel_index / 96;
     always @ (posedge clock_100mhz) begin
