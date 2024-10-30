@@ -28,7 +28,7 @@ module screen_after_collision(
     input btnC,
     
     output reg [15:0] oled_data_collision,
-    output reg return_to_menu = 0
+    output reg return_to_logic = 0
     );
     
     // hard coded because when I tried to put calculations during animation, it will cause clock cycle to be delayed    
@@ -1291,11 +1291,11 @@ module screen_after_collision(
         always @ (posedge clock_100mhz)begin
         if (game_active==1 && is_collision==1) begin
             if (color_change_step == 4 && btnC == 1) begin
-                return_to_menu <= 1 ; // 
+                return_to_logic <= 1 ; // 
                 end
         end
         else begin
-            return_to_menu <= 0;
+            return_to_logic <= 0;
             end
     end
     //return to menu end
@@ -1311,7 +1311,7 @@ module screen_after_collision(
     wire [16:0] square_dy = dy*dy;    
     wire [16:0] square_distance = square_dx + square_dy;
         
-//drawing start
+    //drawing start
     always @ (posedge clock_100mhz)begin
         //screen after animiation begin
         if (color_change_step == 4) begin

@@ -64,7 +64,7 @@ module shield_powerup (
 
     always @(posedge clock_25mhz) begin
        if(game_active) begin
-        if (mode == 2'b00 || mode == 2'b10 || mode==2'b11) begin  
+        if (mode == 2'b00 || mode == 2'b01 || mode == 2'b10 || mode==2'b11) begin  
             if (timer < DELAY) begin
                 timer <= timer + 1;
             end else if (!shield_active) begin
@@ -107,7 +107,7 @@ module shield_powerup (
         shield_powerup_data = 16'b00000_000000_00000;
         is_shield_powerup_hitbox = 0;
 
-        if (shield_visible && shield_active && (mode == 2'b00 || mode == 2'b10 || mode == 2'b11) && 
+        if (shield_visible && shield_active && (mode == 2'b00 || mode == 2'b01 || mode == 2'b10 || mode==2'b11) && 
             !is_obstacle_hitbox_easy && !is_obstacle_hitbox_hard) begin  
             if ((x_coord >= shield_x && x_coord < shield_x + 5) && 
                 (y_coord >= shield_y && y_coord < shield_y + 5)) begin
