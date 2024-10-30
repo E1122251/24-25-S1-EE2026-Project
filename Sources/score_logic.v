@@ -22,31 +22,37 @@
 
 module score_logic(
     input clock_100mhz,
-    
+
     input is_collision,
+    input toggle_game_clear_screen,
     input game_active,
         
     output reg [7:0] seg,
-    output reg [3:0] an
+    output reg [3:0] an,
+    output reg [13:0] score = 0
     );
-    reg [31:0] count = 0;
+    
     
     //use manual digit counting because % and / math cannot be done in clock
+    reg [31:0] count = 0;
     reg [3:0] score_digit_0 = 0;
     reg [3:0] score_digit_1 = 0;
     reg [3:0] score_digit_2 = 0;
     reg [3:0] score_digit_3 = 0;
+    
         
     always @(posedge clock_100mhz) begin
         if (game_active==1)begin
-            if (is_collision == 1)begin //collision test should be done in 100mhz
+            if (is_collision == 1 || toggle_game_clear_screen == 1)begin //collision test should be done in 100mhz
                 score_digit_0 <= score_digit_0;
                 score_digit_1 <= score_digit_1;
                 score_digit_2 <= score_digit_2;
                 score_digit_3 <= score_digit_3;
+                score <= 0;
                 end
             else begin
                 if (count == 32'd49_999_999) begin // count should increase every 0.5sec
+                    score <= score+1;
                     count <= 0;
                     //manual digit count begin
                     if (score_digit_0 == 9) begin
@@ -88,6 +94,7 @@ module score_logic(
             score_digit_1 <= 0;
             score_digit_2 <= 0;
             score_digit_3 <= 0;
+            score <= 0;
             end
     end
         

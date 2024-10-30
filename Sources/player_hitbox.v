@@ -37,7 +37,8 @@ module player_hitbox(
     output reg is_player_wheels,
     output reg is_player_chassis,
     
-    output reg is_player_hitbox
+    output reg is_player_hitbox,
+    output reg is_player_hurtbox
     
     );
     
@@ -49,6 +50,7 @@ module player_hitbox(
             is_player_chassis = 0;
             
             is_player_hitbox = 0;
+            is_player_hurtbox = 0;
             
         end else begin
             
@@ -68,6 +70,8 @@ module player_hitbox(
                 ( pixel_x == (player_x + 9) && pixel_y >= (player_y + 3) && pixel_y <= (player_y + 4) )
                 
                 );
+            
+            is_player_hurtbox = ( is_player_wheels || is_player_chassis );
             
             is_player_hitbox = ( ( !player_is_invincible ) && ( is_player_wheels || is_player_chassis ) );
         

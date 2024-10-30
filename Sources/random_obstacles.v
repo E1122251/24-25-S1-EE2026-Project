@@ -145,15 +145,15 @@ module random_obstacles (
 
     always @(*) begin
       if(game_active) begin
-        obstacle_data = 16'b00000_000000_00000;
-        is_obstacle_hitbox = 0;
-
         if (is_obstacle_wheels_1 || is_obstacle_chassis_1) begin
             obstacle_data <= OBSTACLE_COLOR;
             is_obstacle_hitbox <= 1;
         end else if (is_obstacle_wheels_2 || is_obstacle_chassis_2) begin
             obstacle_data <= OBSTACLE_COLOR;
             is_obstacle_hitbox <= 1;
+        end else begin
+            obstacle_data <= 16'b00000_000000_00000;
+            is_obstacle_hitbox <= 0;
         end
       end else begin
         obstacle_data = 16'b00000_000000_00000;

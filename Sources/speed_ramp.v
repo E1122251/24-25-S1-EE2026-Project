@@ -47,7 +47,7 @@ module speed_ramp (
 
     always @(posedge clock_25mhz) begin
        if(game_active) begin
-        if (mode == 2'b00) begin  
+        if (mode == 2'b00 || mode == 2'b01 || mode == 2'b10 || mode==2'b11) begin  
             if (!speed_ramp_active && delay_timer < DELAY_12_SEC) begin
                 delay_timer <= delay_timer + 1;
             end else if (!is_obstacle_hitbox_easy && !is_shield_powerup_hitbox && !speed_ramp_active) begin
@@ -89,7 +89,7 @@ module speed_ramp (
         speed_ramp_data = 16'b00000_000000_00000;
         is_speed_ramp_hitbox = 0;
 
-        if (speed_ramp_active && mode == 2'b00 && !is_shield_powerup_hitbox && !is_obstacle_hitbox_easy) begin
+        if (speed_ramp_active && (mode == 2'b00 || mode == 2'b01 || mode == 2'b10 || mode==2'b11) && !is_shield_powerup_hitbox && !is_obstacle_hitbox_easy) begin
             // Hollow arrow 1
             if ((y_coord == lane_y_start + 2 && x_coord == arrow1_start_x) ||
                 (y_coord == lane_y_end - 2 && x_coord == arrow1_start_x) ||

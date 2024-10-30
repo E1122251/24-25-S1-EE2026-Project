@@ -33,16 +33,27 @@ module player(
     input game_active,
     
     input [15:0] chassis_color,
-    
     input [15:0] wheel_color,
+    
+    input is_speed_powerup_collision,
+    input is_shield_powerup_collision,
+    
+    input toggle_game_clear_screen,
     
     output [15:0] led_player,
     
     output [15:0] oled_data_player,
     
-    output is_player_hitbox
+    output is_player_hitbox,
+    output is_player_hurtbox
     
     );
+    
+    // localparam begin
+    
+    localparam POWERUP_TIME = 32'd500_000_000;
+    
+    // localparam end
     
     // create pixel_x and pixel_y begin
     
@@ -55,21 +66,54 @@ module player(
     // create pixel_x and pixel_y end
     
     
-    // always block to control powerups state begin
+    // always block to control player_is_invincible begin
     
+    reg player_is_invincible_pickup = 0;
+    reg [31:0] invincible_pickup_duration = 0;
+     
     reg player_is_invincible = 0;
-    reg player_is_speedy = 0;
+    
+    always @(posedge clock_100mhz) begin
+        
+        if ( !game_active ) begin
+            
+            player_is_invincible_pickup <= 0;
+            invincible_pickup_duration <= 0;
+            
+        end else begin
+            
+            if ( is_shield_powerup_collision ) begin
+                
+                player_is_invincible_pickup <= 1;
+                invincible_pickup_duration <= POWERUP_TIME;
+                
+            end else begin
+                
+                if ( invincible_pickup_duration != 0 ) begin
+                    
+                    invincible_pickup_duration <= invincible_pickup_duration - 1;
+                    
+                end else begin
+                    
+                    player_is_invincible_pickup <= 0;
+                    
+                end
+                
+            end
+            
+        end
+    
+    end
     
     always @(posedge clock_100mhz) begin
         
         if ( !game_active ) begin
             
             player_is_invincible <= 0;
-            player_is_speedy <= 0;
             
         end else begin
             
-            if ( sw[1] ) begin
+            if ( player_is_invincible_pickup || sw[1] ) begin
                 
                 player_is_invincible <= 1;
                 
@@ -79,7 +123,61 @@ module player(
                 
             end
             
-            if ( sw[0] ) begin
+        end
+        
+    end
+    
+    // always block to control player_is_invincible end
+    
+    
+    // always block to control player_is_speedy begin
+    
+    reg player_is_speedy_pickup = 0;
+    reg [31:0] speedy_pickup_duration = 0;
+     
+    reg player_is_speedy = 0;
+    
+    always @(posedge clock_100mhz) begin
+        
+        if ( !game_active ) begin
+            
+            player_is_speedy_pickup <= 0;
+            speedy_pickup_duration <= 0;
+            
+        end else begin
+            
+            if ( is_speed_powerup_collision ) begin
+                
+                player_is_speedy_pickup <= 1;
+                speedy_pickup_duration <= POWERUP_TIME;
+                
+            end else begin
+                
+                if ( speedy_pickup_duration != 0 ) begin
+                    
+                    speedy_pickup_duration <= speedy_pickup_duration - 1;
+                    
+                end else begin
+                    
+                    player_is_speedy_pickup <= 0;
+                    
+                end
+                
+            end
+            
+        end
+    
+    end
+    
+    always @(posedge clock_100mhz) begin
+        
+        if ( !game_active ) begin
+            
+            player_is_speedy <= 0;
+            
+        end else begin
+            
+            if ( player_is_speedy_pickup || sw[0] || toggle_game_clear_screen ) begin
                 
                 player_is_speedy <= 1;
                 
@@ -92,8 +190,8 @@ module player(
         end
         
     end
-    
-    // always block to control powerups state end
+
+    // always block to control player_is_speedy end
     
     
     // instantiate player_pos begin
@@ -153,7 +251,8 @@ module player(
         .is_player_wheels(is_player_wheels),
         .is_player_chassis(is_player_chassis),
         
-        .is_player_hitbox(is_player_hitbox)
+        .is_player_hitbox(is_player_hitbox),
+        .is_player_hurtbox(is_player_hurtbox)
         
         );
     
