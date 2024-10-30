@@ -24,12 +24,14 @@ module random_obstacles (
     input clock_25mhz,
     input [12:0] pixel_index,
     input [31:0] speed, 
+    input [1:0] mode,         
+    input [1:0] active_lane, 
+    input game_active,
     output reg [15:0] obstacle_data,
-    output reg is_obstacle_hitbox  
+    output reg is_obstacle_hitbox
 );
 
-    
-    reg [6:0] obstacle_x1 = 96;  
+    reg [6:0] obstacle_x1 = 0;  
     reg [6:0] obstacle_x2 = 48;  
     reg [5:0] obstacle_y1 = 10;  
     reg [5:0] obstacle_y2 = 40;  
@@ -37,80 +39,125 @@ module random_obstacles (
     wire [6:0] x_coord;
     wire [5:0] y_coord;
 
-    assign x_coord = pixel_index % 96; 
+    assign x_coord = pixel_index % 96;  
     assign y_coord = pixel_index / 96;  
 
-    // Obstacle parameters
-    localparam OBSTACLE_COLOR = 16'b11111_000000_11111;  // Purple color
-    localparam OBSTACLE_WIDTH = 3;  // Width of the obstacle
-    localparam Y_BOUNDARY_TOP = 5;
-    localparam Y_BOUNDARY_BOTTOM = 58;
+    localparam OBSTACLE_COLOR = 16'b11111_000000_11111;
+    localparam OBSTACLE_WIDTH = 10;  
+    localparam OBSTACLE_HEIGHT = 8;  
+    localparam LANE_HEIGHT = 16;
 
-    
     reg [31:0] obstacle_scroll_counter = 0;
+    reg [31:0] random_seed = 32'hABCDE123;  
+    reg [5:0] random_value_y1, random_value_y2;
 
-    // Random number generation for positions
-    reg [31:0] random_seed = 32'hABCDE123;  // Initial seed for randomness
-    reg [6:0] random_value_x;  
-    reg [5:0] random_value_y;  
-
-    // Initialize obstacle positions
-    initial begin
-        obstacle_x1 = 96;  // Start first obstacle at the far right
-        obstacle_x2 = 48;  // Start second obstacle in the middle
-        obstacle_y1 = 10;  // Top lane for obstacle 1
-        obstacle_y2 = 40;  // Bottom lane for obstacle 2
+    always @(posedge clock_25mhz) begin
+        random_seed <= {random_seed[30:0], random_seed[31] ^ random_seed[20] ^ random_seed[11] ^ random_seed[0]};
+        
+        if (mode == 2'b01) begin
+            // In mode 01, ignore active_lane and allow obstacles in all lanes
+            case (random_seed % 4)
+                0: random_value_y1 <= 0;   
+                1: random_value_y1 <= 18;  
+                2: random_value_y1 <= 35;  
+                3: random_value_y1 <= 51;  
+            endcase
+            
+            case ((random_seed + 23) % 4)
+                0: random_value_y2 <= 0;   
+                1: random_value_y2 <= 18;  
+                2: random_value_y2 <= 35;  
+                3: random_value_y2 <= 51;  
+            endcase
+        end else begin
+            // For other modes, avoid the active_lane for obstacle generation
+            case (random_seed % 4)
+                0: random_value_y1 <= (active_lane == 0) ? 18 : 0;   
+                1: random_value_y1 <= (active_lane == 1) ? 35 : 18;  
+                2: random_value_y1 <= (active_lane == 2) ? 51 : 35;  
+                3: random_value_y1 <= (active_lane == 3) ? 0 : 51;  
+            endcase
+            
+            case ((random_seed + 23) % 4)
+                0: random_value_y2 <= (active_lane == 0) ? 18 : 0;   
+                1: random_value_y2 <= (active_lane == 1) ? 35 : 18;  
+                2: random_value_y2 <= (active_lane == 2) ? 51 : 35;  
+                3: random_value_y2 <= (active_lane == 3) ? 0 : 51;  
+            endcase
+        end
     end
 
-    // RNG
     always @(posedge clock_25mhz) begin
-        random_seed <= {random_seed[30:0], random_seed[31] ^ random_seed[21] ^ random_seed[1] ^ random_seed[0]};
-        random_value_x <= random_seed % 96; 
-        random_value_y <= random_seed % (Y_BOUNDARY_BOTTOM - Y_BOUNDARY_TOP - OBSTACLE_WIDTH + 1) + Y_BOUNDARY_TOP;
-    end
-
-    // Obstacle movement logic (right to left)
-    always @(posedge clock_25mhz) begin
+      if(game_active) begin
         if (obstacle_scroll_counter < speed) begin
             obstacle_scroll_counter <= obstacle_scroll_counter + 1;
         end else begin
             obstacle_scroll_counter <= 0;
 
-            // Move obstacles from right to left
-            if (obstacle_x1 > 0) begin
-                obstacle_x1 <= obstacle_x1 - 1;
+            if (obstacle_x1 < 96) begin
+                obstacle_x1 <= obstacle_x1 + 1;
             end else begin
-                // Reset to random positions after reaching the left side
-                obstacle_x1 <= 96;  // Reset to the right side of the screen
-                obstacle_y1 <= random_value_y;  // Assign a random Y position within boundaries
+                obstacle_x1 <= 0;
+                obstacle_y1 <= random_value_y1;  
             end
 
-            if (obstacle_x2 > 0) begin
-                obstacle_x2 <= obstacle_x2 - 1;
+            if (obstacle_x2 < 96) begin
+                obstacle_x2 <= obstacle_x2 + 1;
             end else begin
-                obstacle_x2 <= 96; 
-                obstacle_y2 <= random_value_y;  
+                obstacle_x2 <= 0;
+                obstacle_y2 <= random_value_y2;  
             end
         end
+       end else begin 
+         obstacle_scroll_counter = 0;
+         obstacle_x1 = 0;  
+         obstacle_x2 = 48;  
+         obstacle_y1 = 10;  
+         obstacle_y2 = 40;
+       end
     end
+
+    wire is_obstacle_wheels_1, is_obstacle_chassis_1, is_obstacle_wheels_2, is_obstacle_chassis_2;
+
+    assign is_obstacle_wheels_1 = (
+        (x_coord >= (obstacle_x1 + 1) && x_coord <= (obstacle_x1 + 2) && y_coord >= (obstacle_y1) && y_coord <= (obstacle_y1 + 1)) ||
+        (x_coord >= (obstacle_x1 + 5) && x_coord <= (obstacle_x1 + 6) && y_coord >= (obstacle_y1) && y_coord <= (obstacle_y1 + 1)) ||
+        (x_coord >= (obstacle_x1 + 1) && x_coord <= (obstacle_x1 + 2) && y_coord >= (obstacle_y1 + 6) && y_coord <= (obstacle_y1 + 7)) ||
+        (x_coord >= (obstacle_x1 + 5) && x_coord <= (obstacle_x1 + 6) && y_coord >= (obstacle_y1 + 6) && y_coord <= (obstacle_y1 + 7))
+    );
+
+    assign is_obstacle_chassis_1 = (
+        (x_coord >= (obstacle_x1) && x_coord <= (obstacle_x1 + 8) && y_coord >= (obstacle_y1 + 2) && y_coord <= (obstacle_y1 + 5)) ||
+        (x_coord == (obstacle_x1 + 9) && y_coord >= (obstacle_y1 + 3) && y_coord <= (obstacle_y1 + 4))
+    );
+
+    assign is_obstacle_wheels_2 = (
+        (x_coord >= (obstacle_x2 + 1) && x_coord <= (obstacle_x2 + 2) && y_coord >= (obstacle_y2) && y_coord <= (obstacle_y2 + 1)) ||
+        (x_coord >= (obstacle_x2 + 5) && x_coord <= (obstacle_x2 + 6) && y_coord >= (obstacle_y2) && y_coord <= (obstacle_y2 + 1)) ||
+        (x_coord >= (obstacle_x2 + 1) && x_coord <= (obstacle_x2 + 2) && y_coord >= (obstacle_y2 + 6) && y_coord <= (obstacle_y2 + 7)) ||
+        (x_coord >= (obstacle_x2 + 5) && x_coord <= (obstacle_x2 + 6) && y_coord >= (obstacle_y2 + 6) && y_coord <= (obstacle_y2 + 7))
+    );
+
+    assign is_obstacle_chassis_2 = (
+        (x_coord >= (obstacle_x2) && x_coord <= (obstacle_x2 + 8) && y_coord >= (obstacle_y2 + 2) && y_coord <= (obstacle_y2 + 5)) ||
+        (x_coord == (obstacle_x2 + 9) && y_coord >= (obstacle_y2 + 3) && y_coord <= (obstacle_y2 + 4))
+    );
 
     always @(*) begin
-        obstacle_data <= 16'b00000_000000_00000;
-        is_obstacle_hitbox <= 0;  
+      if(game_active) begin
+        obstacle_data = 16'b00000_000000_00000;
+        is_obstacle_hitbox = 0;
 
-        // Check if the current pixel matches the obstacle position
-        // Obstacle 1 (moving from right to left)
-        if (y_coord >= obstacle_y1 && y_coord <= obstacle_y1 + OBSTACLE_WIDTH &&
-            x_coord >= obstacle_x1 && x_coord <= obstacle_x1 + OBSTACLE_WIDTH) begin
+        if (is_obstacle_wheels_1 || is_obstacle_chassis_1) begin
             obstacle_data <= OBSTACLE_COLOR;
-            is_obstacle_hitbox <= 1;  
-        end
-        
-        // Obstacle 2 (moving from right to left)
-        if (y_coord >= obstacle_y2 && y_coord <= obstacle_y2 + OBSTACLE_WIDTH &&
-            x_coord >= obstacle_x2 && x_coord <= obstacle_x2 + OBSTACLE_WIDTH) begin
+            is_obstacle_hitbox <= 1;
+        end else if (is_obstacle_wheels_2 || is_obstacle_chassis_2) begin
             obstacle_data <= OBSTACLE_COLOR;
-            is_obstacle_hitbox <= 1; 
+            is_obstacle_hitbox <= 1;
         end
+      end else begin
+        obstacle_data = 16'b00000_000000_00000;
+        is_obstacle_hitbox = 0;
+      end
     end
-endmodule
+endmodule 
