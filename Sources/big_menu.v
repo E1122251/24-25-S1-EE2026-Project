@@ -328,10 +328,6 @@ input clock_100mhz,
             
             oled_data_menu <= oled_data_home;
             
-            mode <= 0;
-            
-            difficulty <= 0;
-            
             start_game<=0;
             
         end else if (state==4'b0001) begin //start

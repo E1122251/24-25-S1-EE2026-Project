@@ -95,17 +95,23 @@ module game(
     
     wire is_obstacle_hitbox;
     
+    wire is_speed_powerup_hitbox;
+    wire is_shield_powerup_hitbox;
+    
+    wire [1:0] stage_mode;
+    
+    assign stage_mode = {difficulty, mode};
+    
     stage stage_instance (
         
         .clock_100mhz(clock_100mhz),
-        .btnC(btnC),  
-        .btnU(btnU),  
-        .btnD(btnD), 
         .game_active(game_active),
         .pixel_index(pixel_index),
+        .mode(stage_mode),
         .oled_data(oled_data_stage),
-        .led(led_stage),
-        .is_obstacle_hitbox(is_obstacle_hitbox)
+        .selected_obstacle_hitbox(is_obstacle_hitbox),
+        .is_speed_ramp_hitbox(is_speed_powerup_hitbox),
+        .is_shield_powerup_hitbox(is_shield_powerup_hitbox)
         
         );
     
