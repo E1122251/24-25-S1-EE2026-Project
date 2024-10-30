@@ -36,6 +36,10 @@ module game(
     
     input difficulty,
     
+    input [15:0] chassis_color,
+    
+    input [15:0] wheel_color,
+    
     output [15:0] led_game,
     
     output [7:0] seg_game,
@@ -68,6 +72,10 @@ module game(
         .pixel_index(pixel_index),
         
         .game_active(game_active),
+        
+        .chassis_color(chassis_color),
+        
+        .wheel_color(wheel_color),
         
         .led_player(led_player),
         

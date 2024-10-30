@@ -32,6 +32,10 @@ module player(
     
     input game_active,
     
+    input [15:0] chassis_color,
+    
+    input [15:0] wheel_color,
+    
     output [15:0] led_player,
     
     output [15:0] oled_data_player,
@@ -188,6 +192,10 @@ module player(
         
         .player_is_invincible(player_is_invincible),
         .player_is_speedy(player_is_speedy),
+        
+        .chassis_color(chassis_color),
+        
+        .wheel_color(wheel_color),
         
         .oled_data_player(oled_data_player)
         

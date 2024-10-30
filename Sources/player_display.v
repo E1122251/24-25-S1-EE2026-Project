@@ -32,9 +32,15 @@ module player_display(
     input player_is_invincible,
     input player_is_speedy,
     
+    input [15:0] chassis_color,
+    
+    input [15:0] wheel_color,
+    
     output reg [15:0] oled_data_player
     
     );
+    
+    localparam GOLD = 16'd65248;
     
     always @(posedge clock_100mhz) begin
         
@@ -46,11 +52,11 @@ module player_display(
             
             if ( !player_is_speedy ) begin
                 
-                oled_data_player <= 16'd2016;
+                oled_data_player <= wheel_color;
                 
             end else begin
                 
-                oled_data_player <= 16'd65248;
+                oled_data_player <= GOLD;
                 
             end
             
@@ -58,11 +64,11 @@ module player_display(
             
             if ( !player_is_invincible ) begin
                 
-                oled_data_player <= 16'd2016;
+                oled_data_player <= chassis_color;
                 
             end else begin
                 
-                oled_data_player <= 16'd65248;
+                oled_data_player <= GOLD;
                 
             end
             

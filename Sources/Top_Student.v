@@ -120,6 +120,8 @@ module Top_Student (
     wire mode;
     wire difficulty;
     wire start_game;
+    wire [15:0] chassis_color;
+    wire [15:0] wheel_color;
     wire [31:0] seed_RNG;
     
     big_menu big_menu_instance (
@@ -129,6 +131,8 @@ module Top_Student (
         .btnC(btnC_db),
         .btnU(btnU_db),
         .btnD(btnD_db),
+        .btnL(btnL_db),
+        .btnR(btnR_db),
         
         .pixel_index(pixel_index),
         
@@ -143,6 +147,10 @@ module Top_Student (
         .difficulty(difficulty),
         
         .start_game(start_game),
+        
+        .chassis_color(chassis_color),
+        
+        .wheel_color(wheel_color),
         
         .seed_RNG(seed_RNG)
                 
@@ -181,6 +189,10 @@ module Top_Student (
         .mode(mode),
         
         .difficulty(difficulty),
+        
+        .chassis_color(chassis_color),
+        
+        .wheel_color(wheel_color),
         
         .led_game(led_game),
         
