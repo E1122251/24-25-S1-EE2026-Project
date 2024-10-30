@@ -113,7 +113,7 @@ module player(
             
         end else begin
             
-            if ( player_is_invincible_pickup || sw[1] ) begin
+            if ( player_is_invincible_pickup || sw[1] || toggle_game_clear_screen ) begin
                 
                 player_is_invincible <= 1;
                 
@@ -177,7 +177,7 @@ module player(
             
         end else begin
             
-            if ( player_is_speedy_pickup || sw[0] || toggle_game_clear_screen ) begin
+            if ( player_is_speedy_pickup || sw[0] ) begin
                 
                 player_is_speedy <= 1;
                 
