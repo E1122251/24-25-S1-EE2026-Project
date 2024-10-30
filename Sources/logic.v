@@ -60,11 +60,10 @@ module logic(
         .is_shield_powerup_colliion(is_shield_powerup_colliion)
         );
     // instantiate is_collision end
-    
-    
-    // instantiate screen_after_collision begin
     wire return_death;
     assign return_to_menu = return_death;
+
+    // instantiate screen_after_collision begin
     screen_after_collision screen_after_collision_instance(
         .clock_100mhz(clock_100mhz),
         .pixel_index(pixel_index),
@@ -73,24 +72,26 @@ module logic(
         .btnC(btnC),
         
         .oled_data_collision(oled_data_collision),
-        .return_to_menu(return_death)
+        .return_to_logic(return_death)
         );
     // instantiate screen_after_collision end
     
     
-    
+
     // instantiate score_logic begin
+    wire [13:0] score;
     score_logic score_logic_instance(
         .clock_100mhz(clock_100mhz),
         
         .is_collision(is_collision),
+        .toggle_game_clear_screen(toggle_game_clear_screen),
         .game_active(game_active),
             
         .seg(seg),
-        .an(an)
+        .an(an),
+        .score(score)
         );
     // instantiate score_logic end
-    
     wire return_clear;
     assign return_to_menu = return_clear;
     // instantiate screen_game_clear begin
@@ -107,7 +108,7 @@ module logic(
         .return_to_logic(return_clear)
         );
     // instantiate screen_game_clear end
-
+    
     
         
 endmodule
