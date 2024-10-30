@@ -113,36 +113,42 @@ module game(
     
     
     // instantiate logic begin
+    wire is_speed_powerup_hitbox;
+    wire is_shield_powerup_hitbox;
     
     wire [7:0] seg_logic;
     wire [3:0] an_logic;
-    
     wire [15:0] oled_data_collision;
-    
+    wire [15:0] oled_data_game_clear;
     wire is_collision;
+    wire toggle_game_clear_screen;
+    wire is_speed_powerup_colliion;
+    wire is_shield_powerup_colliion;
     
     logic logic_instance (
-        
         .clock_100mhz(clock_100mhz),
         
         .btnC(btnC),
-        
         .game_active(game_active),
+        .mode(mode),
+        .difficulty(difficulty),
         
         .is_player_hitbox(is_player_hitbox),
         .is_obstacle_hitbox(is_obstacle_hitbox),
-        
+        .is_speed_powerup_hitbox(is_speed_powerup_hitbox),
+        .is_shield_powerup_hitbox(is_shield_powerup_hitbox),
         .pixel_index(pixel_index),
                 
         .seg(seg_logic),
         .an(an_logic),
         
-        .oled_data_collision(oled_data_collision),
-        
         .is_collision(is_collision),
-        
+        .toggle_game_clear_screen(toggle_game_clear_screen),
+        .is_speed_powerup_colliion(is_speed_powerup_colliion),
+        .is_shield_powerup_colliion(is_shield_powerup_colliion),
+        .oled_data_collision(oled_data_collision),
+        .oled_data_game_clear(oled_data_game_clear),
         .return_to_menu(return_to_menu)
-        
         );
     
     // instantiate logic end
@@ -154,6 +160,7 @@ module game(
     
     // control led_game end
     
+    localparam RED = 16'd63488;
     
     // control seg_game and an_game begin
     
@@ -161,28 +168,30 @@ module game(
     assign an_game = an_logic;
     
     // control seg_game and an_game end
+
+    // always loop to control oled_data_game begin
     
-    
-    // always block to control oled_data_game begin
+    // always loop to control oled_data_game begin
     
     always @(posedge clock_100mhz) begin
-        
-        if ( is_collision ) begin
-            
+        if (is_collision == 1) begin
             oled_data_game <= oled_data_collision;
+            end
+        else if (toggle_game_clear_screen == 1) begin
+            oled_data_game <= oled_data_game_clear;
+            end
+        else if ( is_player_hitbox && is_obstacle_hitbox ) begin
             
-        end else if ( oled_data_player != 0 ) begin
+            oled_data_game <= RED;
+            
+        end else if ( is_player_hitbox ) begin
             
             oled_data_game <= oled_data_player;
             
-        end else if ( oled_data_stage != 0 ) begin
-        
-            oled_data_game <= oled_data_stage;
             
         end else begin
-            
-            oled_data_game <= 0;
-            
+            oled_data_game <= oled_data_stage;
+
         end
         
     end
