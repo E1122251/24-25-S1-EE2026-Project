@@ -93,25 +93,25 @@ module Top_Student (
     // instantiate Oled_Display end
     
     
-    // counter_RNG begin
+//    // counter_RNG begin
     
-    reg [31:0] counter_RNG = 32'd1;
+//    reg [31:0] counter_RNG = 32'd1;
     
-    always @(posedge clock_100mhz) begin
+//    always @(posedge clock_100mhz) begin
         
-        if ( counter_RNG == 32'hFFFF_FFFF ) begin
+//        if ( counter_RNG == 32'hFFFF_FFFF ) begin
             
-            counter_RNG <= 32'd1;
+//            counter_RNG <= 32'd1;
             
-        end else begin
+//        end else begin
             
-            counter_RNG <= counter_RNG + 1;
+//            counter_RNG <= counter_RNG + 1;
             
-        end
+//        end
         
-    end
+//    end
     
-    // counter_RNG end
+//    // counter_RNG end
     
     
     // instantiate menu begin
@@ -122,7 +122,7 @@ module Top_Student (
     wire start_game;
     wire [15:0] chassis_color;
     wire [15:0] wheel_color;
-    wire [31:0] seed_RNG;
+//    wire [31:0] seed_RNG;
     
     big_menu big_menu_instance (
         
@@ -138,7 +138,7 @@ module Top_Student (
         
         .game_active(game_active),
         
-        .counter_RNG(counter_RNG),
+//        .counter_RNG(counter_RNG),
         
         .oled_data_menu(oled_data_menu),
         
@@ -150,9 +150,9 @@ module Top_Student (
         
         .chassis_color(chassis_color),
         
-        .wheel_color(wheel_color),
+        .wheel_color(wheel_color)
         
-        .seed_RNG(seed_RNG)
+//        .seed_RNG(seed_RNG)
                 
         );
         
