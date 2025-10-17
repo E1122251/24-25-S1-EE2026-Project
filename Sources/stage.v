@@ -118,9 +118,7 @@ module stage (
     shield_powerup shield_gen(
         .clock_25mhz(clock_25mhz),
         .pixel_index(pixel_index),
-        .mode(mode),
-        .is_obstacle_hitbox_easy(is_obstacle_hitbox_easy),
-        .is_obstacle_hitbox_hard(is_obstacle_hitbox_hard),  
+        .mode(mode),  
         .shield_powerup_data(shield_powerup_data),
         .is_shield_powerup_hitbox(is_shield_powerup_hitbox),
         .game_active(game_active)
@@ -143,12 +141,12 @@ module stage (
         if (game_active) begin
             oled_data <= 16'b00000_000000_00000;
 
-            if (is_speed_ramp_hitbox && !is_shield_powerup_hitbox && !selected_obstacle_hitbox) begin
-                oled_data <= speed_ramp_data;
-            end else if (is_shield_powerup_hitbox && !selected_obstacle_hitbox) begin
-                oled_data <= shield_powerup_data;
-            end else if (selected_obstacle_hitbox) begin
+            if (selected_obstacle_data != 0) begin
                 oled_data <= selected_obstacle_data;
+            end else if (shield_powerup_data != 0) begin
+                oled_data <= shield_powerup_data;
+            end else if (speed_ramp_data != 0) begin
+                oled_data <= speed_ramp_data;
             end else begin
                 if ((y_coord >= 0 && y_coord <= 63)) begin
                     oled_data <= 16'b00000_000000_00000;
