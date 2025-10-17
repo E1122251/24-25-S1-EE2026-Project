@@ -77,7 +77,9 @@ module screen_game_clear(
                 )begin
                     oled_data_game_clear <= 16'hFFFF;
                     end
-                else if ((x==11 & y>=42 & y<=48) | (x==12 & y>=43 & y<=47) | (x==13 & y>=44 & y<=46) | (x==14 & y==45) 
+                else if (
+                (x>=80 & x<=85 & y>=19 & y<=23) | (x>=81 & x<=84 & y>=26 & y<=27) | (x>=81 & x<=84 & y==24) | (x>=82 & x<=83 & y==25) | (x>=78 & x<=79 & y==21) |(x==78 & y==22)| (x==79 & y==23) |(x>=86 & x<=87 & y==21)| (x==87 & y==22)| (x==86 & y==23)
+                | (x==11 & y>=42 & y<=48) | (x==12 & y>=43 & y<=47) | (x==13 & y>=44 & y<=46) | (x==14 & y==45) 
                 ) begin
                     oled_data_game_clear <= 16'hECE3;
                 end

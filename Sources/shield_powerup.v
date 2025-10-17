@@ -24,8 +24,6 @@ module shield_powerup (
     input clock_25mhz,
     input [12:0] pixel_index,
     input [1:0] mode,
-    input is_obstacle_hitbox_easy,
-    input is_obstacle_hitbox_hard, 
     input game_active,
     output reg [15:0] shield_powerup_data,
     output reg is_shield_powerup_hitbox
@@ -107,8 +105,7 @@ module shield_powerup (
         shield_powerup_data = 16'b00000_000000_00000;
         is_shield_powerup_hitbox = 0;
 
-        if (shield_visible && shield_active && (mode == 2'b00 || mode == 2'b01 || mode == 2'b10 || mode==2'b11) && 
-            !is_obstacle_hitbox_easy && !is_obstacle_hitbox_hard) begin  
+        if (shield_visible && shield_active && (mode == 2'b00 || mode == 2'b01 || mode == 2'b10 || mode==2'b11)) begin  
             if ((x_coord >= shield_x && x_coord < shield_x + 5) && 
                 (y_coord >= shield_y && y_coord < shield_y + 5)) begin
                 shield_powerup_data = YELLOW;
